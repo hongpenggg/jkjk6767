@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hongpeng's Playground - Hobbies</title>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- 1. Global Reset & Typography --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            overflow-x: hidden; /* Prevent horizontal scroll from 3D effects */
+        }
+
+        /* --- 2. Navigation (Preserved from your code) --- */
+        header {
+            background: #333;
+            color: #fff;
+            padding: 1rem 0;
+            position: relative;
+            z-index: 100;
+        }
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        nav h1 { font-size: 1.5rem; }
+        nav ul { list-style: none; display: flex; }
+        nav ul li { margin-left: 20px; }
+        nav ul li a { color: #fff; text-decoration: none; transition: color 0.3s; }
+        nav ul li a:hover { color: #667eea; }
+
+        /* --- 3. Hero / Carousel Section --- */
+        .hero {
+            background: linear-gradient(to right, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 60px 20px;
+            text-align: center;
+            min-height: 90vh; /* Fill viewport */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* overflow: hidden; Removed to allow popup to cover header if needed, but safe here */
+        }
+        .hero h2 { font-size: 3rem; margin-bottom: 20px; }
+        .hero p.intro { font-size: 1.2rem; margin-bottom: 40px; max-width: 800px; line-height: 1.5; }
+
+        /* --- 4. 3D Carousel Container --- */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            height: 350px; /* Height of the minimised card */
+            perspective: 1200px; /* Controls the 3D depth intensity */
+            margin-top: 10px;
+        }
+
+        /* --- 5. Carousel Controls (Arrows) --- */
+        .carousel-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 50; /* Above cards */
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .carousel-nav-btn:hover {
+            background: white;
+            color: #764ba2;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+            transform: translateY(-50%) scale(1.1);
+        }
+        .prev-btn { left: 0; }
+        .next-btn { right: 0; }
+
+        @media (max-width: 768px) {
+            .carousel-nav-btn { width: 40px; height: 40px; font-size: 1.2rem; }
+            .prev-btn { left: -10px; }
+            .next-btn { right: -10px; }
+        }
+
+        /* --- 6. The Card (Minimised Entry) --- */
+        .carousel-item {
+            position: absolute;
+            width: 600px;
+            height: 300px;
+            background: white;
+            border-radius: 25px; /* Squircle look */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            left: 50%;
+            top: 50%;
+            /* Transform set by JS */
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s, box-shadow 0.3s;
+            cursor: pointer;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+            text-align: left;
+            border: 3px solid transparent; /* For hover glow */
+            user-select: none;
+        }
+
+        /* Hover Effect for Active Card */
+        .carousel-item.active:hover {
+            box-shadow: 0 0 30px rgba(100, 200, 255, 0.6);
+            border-color: rgba(100, 200, 255, 0.6);
+        }
+
+        /* Mobile Card Sizing */
+        @media (max-width: 768px) {
+            .carousel-item {
+                width: 85%;
+                height: 420px; /* Taller for vertical stacking */
+                flex-direction: column;
+                padding: 15px;
+            }
+        }
+
+        /* --- 7. Card Internal Layout --- */
+        .card-img-wrapper {
+            flex: 0 0 40%;
+            height: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-right: 20px;
+        }
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .carousel-item:hover .card-img { transform: scale(1.05); }
+
+        .card-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        .card-header {
+            text-align: right;
+        }
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            line-height: 1.2;
+        }
+        .card-subtitle {
+            font-size: 0.95rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        .card-tags {
+            display: flex;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        /* Mobile adjustments for content */
+        @media (max-width: 768px) {
+            .card-img-wrapper { width: 100%; height: 200px; margin-right: 0; margin-bottom: 15px; flex: none; }
+            .card-content { width: 100%; }
+            .card-title { font-size: 1.5rem; }
+        }
+
+        /* --- 8. Tags Styling --- */
+        .tag {
+            padding: 4px 10px;
+            border-radius: 10px; /* Squircle tags */
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* --- 9. Maximised View (Modal) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); /* Dark dim */
+            z-index: 2000; /* Highest priority */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            backdrop-filter: blur(8px);
+            padding: 20px;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .expanded-card {
+            background: white;
+            width: 800px;
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 30px;
+            padding: 40px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            overflow-y: auto; /* Scroll if content is long */
+            transform: translateY(30px);
+            transition: transform 0.4s ease;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .modal-overlay.active .expanded-card { transform: translateY(0); }
+
+        /* Expanded Layout Typography */
+        .exp-title { font-size: 2.5rem; font-weight: 800; color: #333; margin-bottom: 5px; }
+        .exp-subtitle { font-size: 1.1rem; color: #666; margin-bottom: 20px; font-style: italic; }
+        .exp-tags { margin-bottom: 25px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        
+        .exp-img-wrapper {
+            width: 100%;
+            height: 350px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+        .exp-img { width: 100%; height: 100%; object-fit: cover; }
+
+        .exp-desc { 
+            font-size: 1.05rem; 
+            line-height: 1.8; 
+            color: #444; 
+            text-align: left; 
+            margin-bottom: 30px; 
+            white-space: pre-line; /* Respects line breaks in data */
+            max-width: 700px;
+        }
+
+        /* Action Buttons in Modal */
+        .action-btns-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        .exp-action-btn {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .exp-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+            color: white;
+        }
+
+        /* Minimise Button */
+        .minimise-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #333;
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+            flex-shrink: 0;
+        }
+        .minimise-btn:hover { background: maroon; transform: translateY(-3px); }
+
+        /* Custom Scrollbar for Modal */
+        .expanded-card::-webkit-scrollbar { width: 8px; }
+        .expanded-card::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        .expanded-card::-webkit-scrollbar-thumb { background: #aaa; border-radius: 4px; }
+        .expanded-card::-webkit-scrollbar-thumb:hover { background: #888; }
+
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .expanded-card { padding: 20px; width: 95%; height: 95vh; }
+            .exp-title { font-size: 2rem; }
+            .exp-img-wrapper { height: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <h1>Hongpeng's Playground</h1>
+            <ul>
+                <!-- Preserving your requested relative links -->
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../playground.html">Play</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="hero" class="hero">
+        <h2>My other hobbies</h2>
+        <p class="intro">Although coding, soccer and perfumery are big parts of my life, they aren't the only parts! <br>Here are some of my other hobbies:</p>
+        
+        <div class="carousel-container" id="carousel-container">
+            <button class="carousel-nav-btn prev-btn" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
+            <button class="carousel-nav-btn next-btn" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+            <!-- Items injected via JS -->
+        </div>
+    </section>
+
+    <!-- Modal for Expanded View -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="expanded-card">
+            <h2 class="exp-title" id="exp-title"></h2>
+            <h4 class="exp-subtitle" id="exp-subtitle"></h4>
+            
+            <div class="exp-tags" id="exp-tags"></div>
+            
+            <div class="exp-img-wrapper">
+                <img src="" alt="" class="exp-img" id="exp-img">
+            </div>
+            
+            <div class="exp-desc" id="exp-desc"></div>
+            
+            <div class="action-btns-container" id="action-btns-container"></div>
+
+            <button class="minimise-btn" id="minimise-btn" title="Close">
+                <i class="fas fa-arrow-up"></i>
+            </button>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Hongpeng's Playground. All rights reserved.</p>
+    </footer>
+
+    <script>
+        /**
+         * CONFIGURATION & DATA
+         */
+        const tagColors = {
+            "#OneYear": "tomato",
+            "#TwoYears": "#d35400", // Custom Darker Orange
+            "#ThreeYears": "turquoise",
+            "#FiveYears": "skyblue",
+            "#SinceForever": "#9b59b6", // Lavender purple
+            "#SoloHobby": "#1F618D", // Elegant Dark Blue
+            "#GroupHobby": "#B7950B", // Darker Yellow (Gold-ish) for readability
+            "#Competition": "#C0392B", // Deep Red
+            "#Offline": "#1E8449" // Forest Green
+        };
+
+        const hobbies = [
+            {
+                title: "Reading",
+                subtitle: "Read hundreds of books. Fiction and non-fiction. Adult and teen. Exciting ones and boring ones.",
+                // Placeholder: Books/Library
+                image: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=1000&auto=format&fit=crop",
+                tags: ["#SinceForever", "#SoloHobby", "#Offline"],
+                description: "I’ve been reading since forever. I’m not even joking about that part. Because I grew up with my grandparents and they were really strict about TV, I often only read picture books or listened to Yeye’s Tang Dynasty poems. Even when I moved to Singapore, my mum would only allow me two hours of TV time during the weekends, so reading became a big part of my childhood. I’ve read comics, thrillers, mystery, non-fiction, fantasy…\n\nIn primary school, Tin Tin and Harry Potter were basically my go-to. In secondary school, Sherlock Holmes, Agatha Christie and Jack Reacher were my easy reaches. Till this day, even though I have moved on to “adultier” reads like ‘Nudge’, ‘Thinking, Fast and Slow’, ‘The Power of Now’, ‘This is What Inequality Looks Like’ or ‘Good Economics for Hard Times’, Holmes or Reacher still makes a pleasant, exciting reach."
+            },
+            {
+                title: "Design",
+                subtitle: "Nothing beats designing the perfect interface for an app that you found cluttered.",
+                // Placeholder: UI/UX Design
+                image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?q=80&w=1000&auto=format&fit=crop",
+                tags: ["#FiveYears", "#SoloHobby", "#Competition"],
+                description: "My first experience with design was as a 14-year-old. I had to design a school report to make it appealing for my classmates to read. Since then, Canva, Figma and GIMP have become my go-to tools. I have designed everything from PowerPoint slides to present to classmates, research theses (for a history class!) on the Fourth Crusade for an assignment, travel magazines (to discuss on different climates!) for homework, app interfaces for class and for fun and more. I have even participated in a Dribbble competition to design Taylor Swift album covers! HAHAHA",
+                links: [
+                    { text: "See my designs", url: "https://beacons.ai/hongpeng/mediakit?origin=lib" }
+                ]
+            },
+            {
+                title: "Photography",
+                subtitle: "Little by little, saving bits of space-time.",
+                // Placeholder: Camera
+                image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=1000&auto=format&fit=crop",
+                tags: ["#ThreeYears", "#SoloHobby"],
+                description: "I have a feeling that photography is a ubiquitous human hobby. Seriously. I have yet to meet a single human being who doesn’t like taking photos of beautiful/special things. Perhaps it has something to do with saving bits of space-time or freezing a beautiful, perfect moment. Anyway, I’m building a web-app to host my favourite pictures on GitHub. It is in the works, though, so do look out!"
+            },
+            {
+                title: "Writing",
+                subtitle: "Been writing since forever, and about everything.",
+                // Placeholder: Typewriter/Pen
+                image: "https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=1000&auto=format&fit=crop",
+                tags: ["#SinceForever", "#GroupHobby", "#Competition"],
+                description: "I suppose writing is reading’s best buddy. If you read, some part of you also wants to write, because there will always be that one moment when the literary clock strikes (metaphorically) and you want to express something. A thought. A feeling. Or perhaps, a strong opinion on a certain subject matter. Words tell stories, and stories convey some of our warmest, closest feelings. If you’re reading this, this is a reminder for you to take out a pen and start writing about how your day’s been going!",
+                links: [
+                    { text: "Read on Resonance", url: "https://resonanceblog.net/authors/wei-hongpeng" },
+                    { text: "Read on Medium", url: "https://hongpengwei.medium.com/" }
+                ]
+            },
+            {
+                title: "Travelling",
+                subtitle: "A little part of me that wants to meet the wider world.",
+                // Placeholder: Travel/Map
+                image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1000&auto=format&fit=crop",
+                tags: ["#SinceForever", "#GroupHobby"],
+                description: "Since I was born, I have been travelling. To different countries, to different homes. When I worked as a receptionist in one of Singapore’s backpacker hostels, I met people from all around the world. Germans who would tell me about their small city near Leipzig. Americans who told me they’d get me a beer if I ever came to visit them in Gasquet, California. Mexicans who loved telling me stories about life in Mexico City. The world is so exciting. And if I had the chance, I would love to visit every country. My first stops in the US: The Statue of Liberty, Central Park, San Francisco’s Chinatown and Gasquet — for my beer!"
+            }
+        ];
+
+        /**
+         * LOGIC
+         */
+        const container = document.getElementById('carousel-container');
+        const modal = document.getElementById('modal-overlay');
+        let currentIndex = 0;
+        let isExpanded = false;
+        let autoRotationTimer = null;
+        const ROTATION_SPEED = 4000; // 4 seconds
+
+        // 1. Initialize Carousel Cards
+        function initCarousel() {
+            hobbies.forEach((hobby, index) => {
+                const item = document.createElement('div');
+                item.className = 'carousel-item';
+                item.dataset.index = index;
+
+                // Generate Tags HTML
+                const tagsHtml = hobby.tags.map(tag => {
+                    const color = tagColors[tag] || '#555';
+                    return `<span class="tag" style="background-color: ${color}">${tag}</span>`;
+                }).join('');
+
+                item.innerHTML = `
+                    <div class="card-img-wrapper">
+                        <img src="${hobby.image}" alt="${hobby.title}" class="card-img">
+                    </div>
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="card-title">${hobby.title}</div>
+                            <div class="card-subtitle">${hobby.subtitle}</div>
+                        </div>
+                        <div class="card-tags">
+                            ${tagsHtml}
+                        </div>
+                    </div>
+                `;
+
+                // Click event handling
+                item.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent bubbling issues
+                    if (index === currentIndex) {
+                        expandEntry(hobby);
+                    } else {
+                        rotateTo(index);
+                    }
+                });
+
+                container.appendChild(item);
+            });
+            updatePositions();
+        }
+
+        // 2. Carousel Position Logic
+        function updatePositions() {
+            const items = document.querySelectorAll('.carousel-item');
+            const total = items.length;
+
+            items.forEach((item, index) => {
+                item.classList.remove('active');
+                
+                // Calculate distance from current index, handling wrap-around
+                // We want a result between -total/2 and +total/2
+                let offset = (index - currentIndex + total) % total;
+                if (offset > total / 2) offset -= total;
+
+                // Determine styles
+                let transform = '';
+                let zIndex = 0;
+                let opacity = 0;
+                let pointerEvents = 'none';
+
+                if (offset === 0) {
+                    // Center (Main)
+                    transform = 'translate(-50%, -50%) scale(1)';
+                    zIndex = 10;
+                    opacity = 1;
+                    pointerEvents = 'all';
+                    item.classList.add('active');
+                } else if (offset === 1) {
+                    // Right
+                    transform = 'translate(10%, -50%) scale(0.85)';
+                    zIndex = 5;
+                    opacity = 0.8;
+                    pointerEvents = 'all';
+                } else if (offset === -1) {
+                    // Left
+                    transform = 'translate(-110%, -50%) scale(0.85)';
+                    zIndex = 5;
+                    opacity = 0.8;
+                    pointerEvents = 'all';
+                } else {
+                    // Behind
+                    transform = 'translate(-50%, -50%) scale(0.5)';
+                    zIndex = 1;
+                    opacity = 0; // Hide completely to avoid clutter
+                    pointerEvents = 'none';
+                }
+
+                item.style.transform = transform;
+                item.style.zIndex = zIndex;
+                item.style.opacity = opacity;
+                item.style.pointerEvents = pointerEvents;
+            });
+        }
+
+        // 3. Navigation Controls
+        function rotateNext() {
+            currentIndex = (currentIndex + 1) % hobbies.length;
+            updatePositions();
+        }
+
+        function rotatePrev() {
+            currentIndex = (currentIndex - 1 + hobbies.length) % hobbies.length;
+            updatePositions();
+        }
+
+        function rotateTo(index) {
+            currentIndex = index;
+            updatePositions();
+            restartAutoPlay();
+        }
+
+        // 4. Auto Play Logic
+        function startAutoPlay() {
+            stopAutoPlay();
+            autoRotationTimer = setInterval(() => {
+                if (!isExpanded) {
+                    rotateNext();
+                }
+            }, ROTATION_SPEED);
+        }
+
+        function stopAutoPlay() {
+            if (autoRotationTimer) clearInterval(autoRotationTimer);
+        }
+
+        function restartAutoPlay() {
+            stopAutoPlay();
+            startAutoPlay();
+        }
+
+        // 5. Expansion (Modal) Logic
+        function expandEntry(data) {
+            isExpanded = true;
+            stopAutoPlay();
+
+            // Fill Content
+            document.getElementById('exp-title').textContent = data.title;
+            document.getElementById('exp-subtitle').textContent = data.subtitle;
+            document.getElementById('exp-desc').textContent = data.description;
+            document.getElementById('exp-img').src = data.image;
+
+            // Fill Tags
+            const tagContainer = document.getElementById('exp-tags');
+            tagContainer.innerHTML = data.tags.map(tag => 
+                `<span class="tag" style="background-color: ${tagColors[tag] || '#555'}; font-size: 0.9rem; padding: 6px 15px;">${tag}</span>`
+            ).join('');
+
+            // Fill Actions (Links)
+            const btnContainer = document.getElementById('action-btns-container');
+            btnContainer.innerHTML = '';
+            if (data.links) {
+                data.links.forEach(link => {
+                    const a = document.createElement('a');
+                    a.href = link.url;
+                    a.textContent = link.text;
+                    a.className = 'exp-action-btn';
+                    a.target = '_blank';
+                    btnContainer.appendChild(a);
+                });
+            }
+
+            modal.classList.add('active');
+        }
+
+        function minimiseEntry() {
+            isExpanded = false;
+            modal.classList.remove('active');
+            restartAutoPlay();
+        }
+
+        // 6. Event Listeners
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            rotateNext();
+            restartAutoPlay();
+        });
+
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            rotatePrev();
+            restartAutoPlay();
+        });
+
+        document.getElementById('minimise-btn').addEventListener('click', minimiseEntry);
+
+        // Pause on Hover
+        container.addEventListener('mouseenter', stopAutoPlay);
+        container.addEventListener('mouseleave', () => {
+            if(!isExpanded) startAutoPlay();
+        });
+
+        // Initialize
+        initCarousel();
+        startAutoPlay();
+
+    </script>
+</body>
+</html>
