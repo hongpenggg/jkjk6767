@@ -191,10 +191,70 @@
 
     <section class="hero">
         <h2>Game Time!!</h2>
-        <p>It's time for you to play around with notes yourself! In the window below, you will see various notes sorted into families. You can drag and drop them into the top, heart, base pyramid, and the system will calculate a memory scene most commonly associated with that mix!</p>
+        <p>It's time for you to play around with notes yourself!</p>
+        <p>I developed ScentWorld, a platform with various notes sorted into families. You can drag and drop them into the top, heart, base pyramid, and the system will calculate a memory scene most commonly associated with that mix!</p>
+        <p>ScentWorld is also pending Gemini Integration, at ScentWorld Beta. You can try that one too!</p>
+        <a href="https://hongpenggg.github.io/scentworld" target="_blank" class="btn" rel="noopener noreferrer">Play with Notes on ScentWorld</a><br>
+        <p></p><br>
+        <a href="https://hongpenggg.github.io/scentworld/gemini.html" class="btn" target="_blank" rel="noopener noreferrer">ScentWorld Beta (Gemini Integration)</a>
+        <p></p><br>
 
-        <p>Here, you can try Fragrantica's note matcher to see which fragrance is the closest to your creation. Just click 'include note' and search!</p>
+        <p>You can also try Fragrantica's note matcher to see which fragrance is the closest to your creation. Just click 'include note' and search!</p>
         <a href="https://www.fragrantica.com/ingredients-search/" class="btn" target="_blank" rel="noopener noreferrer">Fragrantica Note Matcher</a>
+        <p></p><br>
+        <p></p><br>
+
+        <p>To proceed, answer this:</p>
+        <form id="triviaForm">
+            <label for="question1">What is the missing note to create "Persian Palace Garden" with oud (top) and saffron (heart)?</label><br>
+            <input type="radio" name="question1" value="Lavender"> Lavender<br>
+            <input type="radio" name="question1" value="Oak"> Oak<br>
+            <input type="radio" name="question1" value="Frankincense"> Frankincense<br>
+            <input type="radio" name="question1" value="Amber"> Amber<br><br>
+
+            <input type="submit" value="Submit Answers" class="btn">
+        </form>
+        <p id="errorMessage" style="color: red; display: none; margin-top: 16px;"></p>
+
+        <script>
+            // Define correct answers
+            const correctAnswers = {
+                question1: "Amber",
+            };
+
+            // Get form and error message element
+            const form = document.getElementById("triviaForm");
+            const errorMessage = document.getElementById("errorMessage");
+
+            // Handle form submission
+            form.addEventListener("submit", function(e) {
+                e.preventDefault(); // Prevent default form submission
+
+                // Get user answers
+                const userAnswers = {
+                    question1: document.querySelector('input[name="question1"]:checked')?.value
+                };
+
+                // Check if all questions are answered
+                if (!userAnswers.question1) {
+                    errorMessage.textContent = "Please answer all questions!";
+                    errorMessage.style.display = "block";
+                    return;
+                }
+
+                // Validate answers
+                const allCorrect = userAnswers.question1 === correctAnswers.question1;
+
+                if (allCorrect) {
+                    // Redirect to next page
+                    window.location.href = "otherhobbies.html"; // Change to your next page URL
+                } else {
+                    // Show error message
+                    errorMessage.textContent = "Wrong answer(s) detected. Try again!";
+                    errorMessage.style.display = "block";
+                }
+            });
+        </script>
     </section>
 
     <footer>
