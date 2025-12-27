@@ -4,22 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hongpeng's Game</title>
+    <!-- Font Awesome for Icons (Music/Close) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --cursor-color: #ff6b6b;
+            --bg-gradient: linear-gradient(to right, #667eea 0%, #764ba2 100%);
+            --tag-speed: 50s; /* Adjust speed of wall here */
+        }
+
+        /* --- CUSTOM CURSORS --- */
+        body {
+            /* Default Cursor: Small Circle */
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="5" fill="%23ff6b6b" opacity="0.9"/></svg>') 10 10, auto;
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+            margin: 0;
+        }
+
+        /* Pointer Cursor */
+        a, button, .tag, .internal-link, .close-btn {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><defs><filter id="f1" x="0" y="0" width="200%25" height="200%25"><feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="%23ff6b6b"/></filter></defs><circle cx="16" cy="16" r="6" fill="%23ff6b6b" filter="url(%23f1)"/></svg>') 16 16, pointer !important;
+        }
+
+        /* Text Cursor */
+        p, h1, h2, h3, span, input, textarea {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect x="9" y="2" width="2" height="16" rx="1" fill="%23ff6b6b"/></svg>') 10 10, text;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        body {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
-            color: #333;
-        }
+
         header {
             background: #333;
             color: #fff;
             padding: 1rem 0;
+            position: relative;
+            z-index: 10;
         }
+
         nav {
             max-width: 1200px;
             margin: 0 auto;
@@ -28,51 +56,281 @@
             align-items: center;
             padding: 0 20px;
         }
-        nav h1 {
-            font-size: 1.5rem;
-        }
-        nav ul {
-            list-style: none;
-            display: flex;
-        }
-        nav ul li {
-            margin-left: 20px;
-        }
-        nav ul li a {
-            color: #fff;
-            text-decoration: none;
-        }
+
+        nav h1 { font-size: 1.5rem; }
+        nav ul { list-style: none; display: flex; }
+        nav ul li { margin-left: 20px; }
+        nav ul li a { color: #fff; text-decoration: none; }
+
         .hero {
-            background: linear-gradient(to right, #667eea 0%, #764ba2 100%);
+            background: var(--bg-gradient);
             color: #fff;
-            padding: 100px 20px;
+            padding: 40px 20px; 
             text-align: center;
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
         }
-        .hero h2 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-        }
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-        }
-        .btn {
-            background: #fff;
-            color: #333;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            display: inline-block;
-        }
-        .btn:hover {
-            background: maroon;
-            color: antiquewhite;
-        }
+
+        .hero h2 { font-size: 3rem; margin-bottom: 10px; }
+        .hero p { font-size: 1.2rem; margin-bottom: 20px; max-width: 800px;}
+
         footer {
             background: #333;
             color: #fff;
             text-align: center;
             padding: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* --- ACADEMIC WALL STYLES --- */
+        .wall-container {
+            width: 100%;
+            max-width: 1600px;
+            height: 75vh; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 12px;
+            perspective: 1000px;
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            overflow: hidden;
+        }
+
+        .wall-row {
+            display: flex;
+            width: 100%;
+            overflow: hidden;
+            padding: 2px 0;
+        }
+
+        .wall-track {
+            display: flex;
+            gap: 15px;
+            animation: scrollLeft var(--tag-speed) linear infinite;
+            width: max-content;
+            will-change: transform; /* Hint for smoother animation */
+        }
+
+        .wall-row:nth-child(even) .wall-track {
+            animation-direction: reverse; 
+        }
+
+        .tag {
+            padding: 12px 25px;
+            border-radius: 50px; /* Medicine pill shape */
+            background: rgba(255, 255, 255, 0.15); /* Semi-transparent */
+            backdrop-filter: blur(4px);
+            color: white;
+            font-weight: 800;
+            font-size: 1rem;
+            white-space: nowrap;
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                        background-color 0.3s ease, 
+                        box-shadow 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255,255,255,0.15);
+            user-select: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .wall-row:hover .wall-track {
+            animation-play-state: paused;
+        }
+
+        .tag:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(100, 200, 255, 0.6);
+            background: rgba(255, 255, 255, 0.25);
+            z-index: 5;
+            border-color: rgba(255,255,255,0.4);
+        }
+
+        @keyframes scrollLeft {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* --- MODAL WINDOW --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease, backdrop-filter 0.4s ease;
+            z-index: 1000;
+            backdrop-filter: blur(0px); /* Animate blur */
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-content {
+            background: #fff;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            border-radius: 20px;
+            padding: 40px;
+            position: relative;
+            overflow-y: auto;
+            transform: scale(0.8) translateY(20px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy smooth open */
+            text-align: center;
+            color: #333;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        .modal-header h2 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .modal-header h3 {
+            font-size: 1.2rem;
+            color: #666;
+            font-weight: normal;
+            font-style: italic;
+            margin-bottom: 25px;
+        }
+
+        .modal-body img {
+            max-width: 100%;
+            height: auto;
+            max-height: 300px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+            object-fit: cover;
+        }
+
+        .caption {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 25px;
+            display: block;
+        }
+
+        .long-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            text-align: left;
+            max-width: 90%;
+            margin: 0 auto 40px auto;
+            white-space: pre-wrap;
+        }
+
+        /* Close Button */
+        .close-btn {
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #f0f0f0;
+            color: #333;
+            font-size: 1.5rem;
+            border: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .close-btn:hover {
+            background: #ff6b6b;
+            color: white;
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        /* --- INTERNAL LINKS HIGHLIGHTING --- */
+        .internal-link {
+            position: relative;
+            font-weight: bold;
+            color: #2d3748;
+            display: inline-block;
+            transition: color 0.3s ease;
+            z-index: 1;
+        }
+
+        .internal-link::before {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: -2px;
+            width: 100%;
+            height: 8px;
+            background: #9ae6b4;
+            transform: skewX(-20deg);
+            z-index: -1;
+            transition: all 0.3s ease;
+            opacity: 0.7;
+        }
+
+        .internal-link:hover {
+            color: #000;
+        }
+
+        .internal-link:hover::before {
+            height: 100%;
+            bottom: 0;
+            opacity: 1;
+            transform: skewX(-20deg) scale(1.05);
+        }
+
+        /* --- MUSIC BUTTON --- */
+        .music-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            color: #333;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 100;
+            border: none;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .music-btn:hover {
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transform: translateY(-4px);
+        }
+
+        .music-btn:active {
+            transform: translateY(0);
+        }
+
+        .music-btn.playing {
+            color: #667eea;
+            background: #f8f9fa;
         }
     </style>
 </head>
@@ -91,10 +349,342 @@
         <h2>Welcome to The World of Academia</h2>
         <p>Here, we'll explore some of Hongpeng's academic interests! Click any of the floating tags to view!</p>
         
+        <div class="wall-container" id="wallContainer">
+            <!-- Rows injected by JS -->
+        </div>
     </section>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content" id="modalContent">
+            <div class="modal-header">
+                <h2 id="mTitle">Title</h2>
+                <h3 id="mSubtitle">Subtitle</h3>
+            </div>
+            <div class="modal-body">
+                <img id="mImage" src="" alt="Interest Image">
+                <span class="caption" id="mCaption">Caption goes here</span>
+                <div class="long-description" id="mDesc">
+                    <!-- Description goes here -->
+                </div>
+            </div>
+            <button class="close-btn" id="closeBtn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Music Button -->
+    <button class="music-btn" id="musicBtn" title="Toggle Music">
+        <i class="fas fa-music"></i>
+    </button>
 
     <footer>
         <p>&copy; 2025 Hongpeng's Playground. All rights reserved.</p>
     </footer>
+
+    <script>
+        // --- DATA ---
+        // Using placehold.co for images.
+        const interests = [
+            {
+                id: 'python',
+                tag: 'Python',
+                color: '#306998',
+                subtitle: 'who knew computers were parseltongues?',
+                image: 'https://placehold.co/600x300/306998/white?text=Python+Code',
+                caption: 'The elegance of simplicity.',
+                desc: `Python is truly one of the most beautiful coding languages out there. For one, it’s simple. Unlike other coding languages, Python’s main aim is simplicity. That means, it can easily be read like a wall of text or a story. Its simplicity also means that it’s extremely clean. So for OCDs like me, yayyy! \n\nAnother part of Python that I like is its incredible ability to handle a multitude of tasks. With its superpowers (libraries), Python can easily perform the myriad of tasks you ask of it: from <span class="internal-link" data-target="data-science">data science</span> to plotting graphs to running back-end for web-apps to, well, making games.`
+            },
+            {
+                id: 'data-science',
+                tag: 'Data Science',
+                color: '#28a745',
+                subtitle: 'speaking the language of the universe — numbers!',
+                image: 'https://placehold.co/600x300/28a745/white?text=Data+Visualization',
+                caption: 'Patterns in the chaos.',
+                desc: `When people think of data, they think of numbers. Of the countless 'zeroes' and 'ones' trilling across a screen, like a hacker in a Tom Cruise movie.\n\nBut what they don't realise, is that data really is the hundred reels you liked on Instagram today and the two items that have been on your Amazon cart since forever. \n\nData surrounds us. Every decision we make is a small point in a data cloud that represents us. Whether we Googled ten times today for Zumba classes in Tampines. All that says something about us and the decisions that we'll likely make.\n\nThaler described in his landmark book, Nudge, how we can 'nudge' people into making healthier, better decisions for themselves. With the right data, we can better design 'nudges' to help people make better choices for themselves by making them more convenient.\n\nFor instance, data on one's groceries might reveal the kind of diet one is on. If it's an unhealthy one, we can 'nudge' them towards a healthier diet by making it convenient to eat healthy with choice architecture and shelf placement. Similarly, using the power of default options (in financial packages) has been shown to help people make better financial decisions. By using data on attention span and interests, we can build solutions to help children learn better, and at a lower cost than if we had to individually assess every child.\n\nData can change lives and help people make better and more responsible decisions in their jobs, education, and lives. And that's why I'm so excited to learn everything there is to learn about it.`
+            },
+            {
+                id: 'frontend-dev',
+                tag: 'Frontend Dev',
+                color: '#e34c26',
+                subtitle: 'painting the walls of the internet, bit by bit',
+                image: 'https://placehold.co/600x300/e34c26/white?text=Web+Design',
+                caption: 'Where art meets logic.',
+                desc: `Nothing pains me more than seeing a poorly designed website. Well, I can’t complain because my own websites are not exactly Apple-worthy… But I love to find better ways to design and place information on the web. For me, it’s not just a science, but also an art. Knowing where to place stuff, how to place stuff, and what colour to place stuff — it’s not simple! Of course, this is immeasurably linked to <span class="internal-link" data-target="interaction-design">interaction design</span>.`
+            },
+            {
+                id: 'interaction-design',
+                tag: 'Interaction Design',
+                color: '#6f42c1',
+                subtitle: 'the physics of the internet, right?',
+                image: 'https://placehold.co/600x300/6f42c1/white?text=User+Flow',
+                caption: 'Anticipating the user.',
+                desc: `If UI design is painting the world of the internet, then interaction design is the <span class="internal-link" data-target="physics">gravity</span>. Think about it this way: when you scroll something on your phone or laptop, will it feel weird if every time your finger moves slowly, the page scrolls ridiculously fast, but when your finger moves fast, it bides its time? Or when you click a button on a webpage, nothing happens. But when you click the area 30px to the right of the button, something happens? Weird, right? \n\nWell, that’s because when we interact with websites or apps, we have certain expectations. That when we click stuff (buttons/links), things happen. When we click blank space, nothing happens. It’s not something we were born with, but it’s something that we “adapted to” by using our devices enough.\n\nHow people interact with digital content? That’s a topic I’d love to get in depth about.`
+            },
+            {
+                id: 'c-sharp',
+                tag: 'C#',
+                color: '#9b4993',
+                subtitle: 'sorry, the # symbol was already reserved',
+                image: 'https://placehold.co/600x300/9b4993/white?text=Unity+Development',
+                caption: 'Scripts and Sprites.',
+                desc: `I kinda picked this up from scratch just to build a game. Yeah, I know. Wacky. All I wanted to do was to build a graphical version of <a href="https://github.com/hongpenggg/il_consigliere" target="_blank" class="internal-link">Il Consigliere</a> on Unity engine. And yes, unfortunately, the two biggest graphic engines require knowledge of C/C++. That graphic version is still in the works though, so do wait out!`
+            },
+            {
+                id: 'game-dev',
+                tag: 'Game Dev',
+                color: '#ffc107',
+                subtitle: 'some fun? definitely!',
+                image: 'https://placehold.co/600x300/ffc107/black?text=Game+Design',
+                caption: 'Building worlds.',
+                desc: `I love playing games. I love making games. Enough said.\n\nJokes aside, games are a major part of my life, because they are amazing ways to destress and bond with my friends. Even though I sometimes feel like tossing my phone in the bin because of how horribly scripted EA Sports FC Mobile is, it’s still fun to play. Sort of.\n\nMoving forward, if I had more time, I’ll definitely push out a few indie/rpg games. Who knows, maybe even a science/math/coding game like Code Combat to help other kids fall in love with STEM like I did.`
+            },
+            {
+                id: 'ai',
+                tag: 'Artificial Intelligence',
+                color: '#17a2b8',
+                subtitle: 'yeah, you guessed it',
+                image: 'https://placehold.co/600x300/17a2b8/white?text=Neural+Link',
+                caption: 'The black box.',
+                desc: `I mean, who wouldn’t want to learn more about AI. It’s literally the genie in the bottle — mysterious workings, magical results. It can metaphorically and literally build you a palace in code or in writing.\n\nAnd yes, AI is also that genie, because it’s a total black box. How they think, what they think about — we have no definite way to verify. For safe AI development, AI needs to be interpretable: i.e., we need to know what is going on inside them. We need to know which neurons fire for what. We need to understand polysemanticity better, and find better ways to quantify what AI is thinking about.\n\nAnd I? I’m more than excited to begin.`
+            },
+            {
+                id: 'neural-networks',
+                tag: 'Neural Networks',
+                color: '#d63384',
+                subtitle: 'how machines think, to mimic how we think',
+                image: 'https://placehold.co/600x300/d63384/white?text=Network+Nodes',
+                caption: 'Layers of logic.',
+                desc: `Large-language models are made of artificial neural networks — code that replicates our brain structure. Individual neurons link together to form layers, and layers form the network. Similar to how information flows in the human brain, neurons activate in different assortments to process information.\n\nPerhaps better understanding of these magical robotic brains will help us understand a little bit more about ourselves and <span class="internal-link" data-target="neurobiology">how we think</span>.`
+            },
+            {
+                id: 'cognitive-science',
+                tag: 'Cognitive Science',
+                color: '#fd7e14',
+                subtitle: 'how do we perceive, think, learn and remember?',
+                image: 'https://placehold.co/600x300/fd7e14/white?text=The+Mind',
+                caption: 'The machinery of thought.',
+                desc: `Our minds are natural neural networks, capable of the most complex calculations and abilities. We can perceive emotions, have memories and experience feelings for other people. Why is that?\n\nPerhaps one day, by <span class="internal-link" data-target="neural-networks">replicating</span> these “human” features in sand and rock, we will realise how magical the gift of life is. See: <a href="https://resonanceblog.net/post/the-power-of-unconscious-bias" target="_blank" class="internal-link">Unconscious bias</a>.`
+            },
+            {
+                id: 'psychology',
+                tag: 'Psychology',
+                color: '#20c997',
+                subtitle: 'how we think and interact with ourselves, others and our environment',
+                image: 'https://placehold.co/600x300/20c997/white?text=Psychology',
+                caption: 'Understanding the self.',
+                desc: `It’s always fascinating to know why we think the certain ways we do, and why we behave as we are. Our personalities, our up-bringing, our environment… Psychology is the study that evaluates all these answers to ambitiously provide a definitive answer.\n\nTruth is? We’ve come a long way since Sigmund Freud and Carl Jung. And we still have a long way to go before truly understanding ourselves and others.`
+            },
+            {
+                id: 'philosophy',
+                tag: 'Philosophy',
+                color: '#6610f2',
+                subtitle: 'have you ever had big questions about who we are, and why we are?',
+                image: 'https://placehold.co/600x300/6610f2/white?text=The+Thinker',
+                caption: 'The big questions.',
+                desc: `Questions about existence, knowledge, values, reason, mind, and language are common here. And so is using rational argument to explore life's biggest mysteries, what it means to live well, and our place in the universe. I like the way philo distinguishes itself from science by questioning the very foundations other disciplines take for granted.`
+            },
+            {
+                id: 'math',
+                tag: 'Math',
+                color: '#dc3545',
+                subtitle: 'well, you can’t run from math',
+                image: 'https://placehold.co/600x300/dc3545/white?text=E=mc2',
+                caption: 'The universal language.',
+                desc: `Math truly makes the world go round, huh? Its numbers, logic, equations and theorems are the all-encompassing keys to the answers of the universe. From black holes to anti-matter, from <span class="internal-link" data-target="neural-networks">neural networks</span> to <span class="internal-link" data-target="ai">AI</span>… Some want to run from math, but there’s truly no running. We live in it’s shadow, destined to only ever find answers to our burning questions by first mastering it.`
+            },
+            {
+                id: 'physics',
+                tag: 'Physics',
+                color: '#0d6efd',
+                subtitle: 'gravity, motion and relativity. hell yeah!',
+                image: 'https://placehold.co/600x300/0d6efd/white?text=Orbit',
+                caption: 'How the world moves.',
+                desc: `What’s more interesting than peeking at the stars? Peeking at the stars while calculating their position. From how balls bounce to why things fall to how black holes work, physics answers some of life’s most interesting questions. And yet, it still promises to answer more: in the field of <span class="internal-link" data-target="ai">AI</span>!`
+            },
+            {
+                id: 'neurobiology',
+                tag: 'Neurobiology',
+                color: '#e83e8c',
+                subtitle: 'not to be a doctor, but to know how we think',
+                image: 'https://placehold.co/600x300/e83e8c/white?text=Neurons',
+                caption: 'Biological wiring.',
+                desc: `To understand how we think, first we have to understand the nervous system — brain, spinal cord, nerves — and its biological underpinnings. Neurobiology lets us explore how nerve cells (<span class="internal-link" data-target="neural-networks">neurons</span>) function, connect, develop, and control behaviour, <span class="internal-link" data-target="cognitive-science">cognition</span>, emotions, and bodily processes. It integrates biology, chemistry, physics, and psychology to understand the basis of life, learning, disease (like Alzheimer's), and <span class="internal-link" data-target="philosophy">consciousness</span>. Interesting, and beautiful.`
+            },
+            {
+                id: 'cpp',
+                tag: 'C++',
+                color: '#007bff',
+                subtitle: 'building games with unreal engine',
+                image: 'https://placehold.co/600x300/007bff/white?text=C++',
+                caption: 'Power and speed.',
+                desc: `Yep, I’m learning this just to build games with Unreal Engine. Seriously.`
+            },
+            {
+                id: 'rust',
+                tag: 'Rust',
+                color: '#b7410e',
+                subtitle: 'like python, but for data science. better, even.',
+                image: 'https://placehold.co/600x300/b7410e/white?text=Rust+Lang',
+                caption: 'Safety first.',
+                desc: `Numbers and information? That’s Rust’s piece of cake. And not to mention, for some reason, you can build amazing <span class="internal-link" data-target="frontend-dev">web-apps</span> on Rust Tauri. Huh.`
+            },
+            {
+                id: 'flutter',
+                tag: 'Flutter',
+                color: '#42a5f5',
+                subtitle: 'building apps for all platforms',
+                image: 'https://placehold.co/600x300/42a5f5/white?text=Flutter',
+                caption: 'Write once, run everywhere.',
+                desc: `What a superpower. Would love to bring ScentWorld and Il Consigliere to all platforms. Yayyy!`
+            }
+        ];
+
+        // --- WALL GENERATION ---
+        const wallContainer = document.getElementById('wallContainer');
+
+        function shuffleArray(array) {
+            let currentIndex = array.length, randomIndex;
+            let newArr = [...array];
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [newArr[currentIndex], newArr[randomIndex]] = [newArr[randomIndex], newArr[currentIndex]];
+            }
+            return newArr;
+        }
+
+        function hexToRgba(hex, alpha) {
+            let r = parseInt(hex.slice(1, 3), 16);
+            let g = parseInt(hex.slice(3, 5), 16);
+            let b = parseInt(hex.slice(5, 7), 16);
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
+        function createWallRow(items) {
+            const row = document.createElement('div');
+            row.className = 'wall-row';
+            
+            const track = document.createElement('div');
+            track.className = 'wall-track';
+
+            const combinedItems = [...items, ...items];
+
+            combinedItems.forEach(item => {
+                const tag = document.createElement('div');
+                tag.className = 'tag';
+                tag.textContent = '#' + item.tag; 
+                tag.style.backgroundColor = hexToRgba(item.color, 0.35);
+                tag.style.borderColor = item.color;
+                
+                tag.dataset.id = item.id;
+                tag.addEventListener('click', () => openModal(item.id));
+                track.appendChild(tag);
+            });
+
+            row.appendChild(track);
+            return row;
+        }
+
+        for (let i = 0; i < 6; i++) {
+             wallContainer.appendChild(createWallRow(shuffleArray(interests)));
+        }
+
+        // --- MODAL LOGIC ---
+        const modalOverlay = document.getElementById('modalOverlay');
+        const closeBtn = document.getElementById('closeBtn');
+
+        function openModal(id) {
+            const data = interests.find(i => i.id === id);
+            if (!data) return;
+
+            document.getElementById('mTitle').textContent = data.tag;
+            document.getElementById('mTitle').style.color = data.color;
+            document.getElementById('mSubtitle').textContent = data.subtitle;
+            document.getElementById('mImage').src = data.image;
+            document.getElementById('mCaption').textContent = data.caption;
+            document.getElementById('mDesc').innerHTML = data.desc;
+
+            // Re-attach internal links
+            const internalLinks = document.querySelectorAll('.internal-link');
+            internalLinks.forEach(link => {
+                if(link.tagName.toLowerCase() !== 'a') {
+                    link.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        // Close then open or just swap data? Swapping data feels faster/better here.
+                        // But to trigger animation, let's just swap content immediately.
+                        openModal(link.dataset.target);
+                    });
+                }
+            });
+
+            modalOverlay.classList.add('active');
+        }
+
+        function closeModal() {
+            modalOverlay.classList.remove('active');
+        }
+
+        closeBtn.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) closeModal();
+        });
+
+        // --- AUDIO LOGIC ---
+        const musicBtn = document.getElementById('musicBtn');
+        const musicIcon = musicBtn.querySelector('i');
+        const audio = new Audio('../assets/audio/background.mp3');
+        audio.loop = true;
+        let isPlaying = true; // Intent
+
+        function updateMusicUI() {
+            if (isPlaying) {
+                musicIcon.className = 'fas fa-music';
+                musicIcon.innerHTML = ''; 
+                musicBtn.classList.add('playing');
+            } else {
+                musicIcon.className = 'fas fa-music';
+                musicIcon.innerHTML = '<span style="position:absolute; font-size: 1.8rem; color: #333; left: 50%; top: 50%; transform: translate(-50%, -50%);">/</span>';
+                musicBtn.classList.remove('playing');
+            }
+        }
+
+        // 1. Try Autoplay immediately
+        const playPromise = audio.play();
+
+        if (playPromise !== undefined) {
+            playPromise.then(_ => {
+                // Autoplay started!
+                updateMusicUI();
+            }).catch(error => {
+                // Autoplay blocked.
+                // We set state to false visually until interaction.
+                isPlaying = false;
+                updateMusicUI();
+                
+                // Add one-time listener to start on ANY click
+                document.addEventListener('click', function startMusic() {
+                    isPlaying = true;
+                    audio.play();
+                    updateMusicUI();
+                    document.removeEventListener('click', startMusic);
+                }, { once: true });
+            });
+        }
+
+        musicBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); 
+            if (isPlaying) {
+                audio.pause();
+                isPlaying = false;
+            } else {
+                audio.play();
+                isPlaying = true;
+            }
+            updateMusicUI();
+        });
+    </script>
 </body>
 </html>
