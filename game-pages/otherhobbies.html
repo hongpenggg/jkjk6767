@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hongpeng's Playground - Hobbies</title>
+    <title>Hongpeng's Playground</title>
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- 1. Global Reset & Typography --- */
+        /* --- Global Reset & Typography --- */
         * {
             margin: 0;
             padding: 0;
@@ -21,7 +21,7 @@
             overflow-x: hidden; /* Prevent horizontal scroll from 3D effects */
         }
 
-        /* --- 2. Navigation (Preserved from your code) --- */
+        /* --- Navigation (Preserved from your code) --- */
         header {
             background: #333;
             color: #fff;
@@ -43,7 +43,7 @@
         nav ul li a { color: #fff; text-decoration: none; transition: color 0.3s; }
         nav ul li a:hover { color: #667eea; }
 
-        /* --- 3. Hero / Carousel Section --- */
+        /* --- Hero / Carousel Section --- */
         .hero {
             background: linear-gradient(to right, #667eea 0%, #764ba2 100%);
             color: #fff;
@@ -58,7 +58,7 @@
         .hero h2 { font-size: 3rem; margin-bottom: 20px; }
         .hero p.intro { font-size: 1.2rem; margin-bottom: 40px; max-width: 800px; line-height: 1.5; }
 
-        /* --- 4. 3D Carousel Container --- */
+        /* --- 3D Carousel Container --- */
         .carousel-container {
             position: relative;
             width: 100%;
@@ -68,7 +68,7 @@
             margin-top: 10px;
         }
 
-        /* --- 5. Carousel Controls (Arrows) --- */
+        /* --- Carousel Controls (Arrows) --- */
         .carousel-nav-btn {
             position: absolute;
             top: 50%;
@@ -103,7 +103,7 @@
             .next-btn { right: -10px; }
         }
 
-        /* --- 6. The Card (Minimised Entry) --- */
+        /* --- Card (when Minimised) --- */
         .carousel-item {
             position: absolute;
             width: 600px;
@@ -142,7 +142,7 @@
             }
         }
 
-        /* --- 7. Card Internal Layout --- */
+        /* --- Card Internal Layout --- */
         .card-img-wrapper {
             flex: 0 0 40%;
             height: 100%;
@@ -197,7 +197,7 @@
             .card-title { font-size: 1.5rem; }
         }
 
-        /* --- 8. Tags Styling --- */
+        /* --- Tags Styling --- */
         .tag {
             padding: 4px 10px;
             border-radius: 10px; /* Squircle tags */
@@ -208,7 +208,7 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        /* --- 9. Maximised View (Modal) --- */
+        /* --- Maximised View (Modal) --- */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -333,6 +333,19 @@
             .exp-title { font-size: 2rem; }
             .exp-img-wrapper { height: 200px; }
         }
+
+        .btn {
+            background: #fff;
+            color: #333;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        .btn:hover {
+            background: maroon;
+            color: antiquewhite;
+        }
     </style>
 </head>
 <body>
@@ -341,7 +354,6 @@
         <nav>
             <h1>Hongpeng's Playground</h1>
             <ul>
-                <!-- Preserving your requested relative links -->
                 <li><a href="../index.html">Home</a></li>
                 <li><a href="../playground.html">Play</a></li>
             </ul>
@@ -381,6 +393,12 @@
         </div>
     </div>
 
+    <section class="hero">
+        <p>Feel free to keep clicking and exploring. When you're ready:</p>
+        <p></p><br>
+        <a href="page4.html" class="btn">Proceed to The World of Academia</a>
+    </section>
+
     <footer>
         <p>&copy; 2025 Hongpeng's Playground. All rights reserved.</p>
     </footer>
@@ -406,7 +424,7 @@
                 title: "Reading",
                 subtitle: "Read hundreds of books. Fiction and non-fiction. Adult and teen. Exciting ones and boring ones.",
                 // Placeholder: Books/Library
-                image: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=1000&auto=format&fit=crop",
+                image: "../assets/images/shelf_of_books.jpeg",
                 tags: ["#SinceForever", "#SoloHobby", "#Offline"],
                 description: "I’ve been reading since forever. I’m not even joking about that part. Because I grew up with my grandparents and they were really strict about TV, I often only read picture books or listened to Yeye’s Tang Dynasty poems. Even when I moved to Singapore, my mum would only allow me two hours of TV time during the weekends, so reading became a big part of my childhood. I’ve read comics, thrillers, mystery, non-fiction, fantasy…\n\nIn primary school, Tin Tin and Harry Potter were basically my go-to. In secondary school, Sherlock Holmes, Agatha Christie and Jack Reacher were my easy reaches. Till this day, even though I have moved on to “adultier” reads like ‘Nudge’, ‘Thinking, Fast and Slow’, ‘The Power of Now’, ‘This is What Inequality Looks Like’ or ‘Good Economics for Hard Times’, Holmes or Reacher still makes a pleasant, exciting reach."
             },
@@ -414,7 +432,7 @@
                 title: "Design",
                 subtitle: "Nothing beats designing the perfect interface for an app that you found cluttered.",
                 // Placeholder: UI/UX Design
-                image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?q=80&w=1000&auto=format&fit=crop",
+                image: "../assets/images/figma_designs.jpeg",
                 tags: ["#FiveYears", "#SoloHobby", "#Competition"],
                 description: "My first experience with design was as a 14-year-old. I had to design a school report to make it appealing for my classmates to read. Since then, Canva, Figma and GIMP have become my go-to tools. I have designed everything from PowerPoint slides to present to classmates, research theses (for a history class!) on the Fourth Crusade for an assignment, travel magazines (to discuss on different climates!) for homework, app interfaces for class and for fun and more. I have even participated in a Dribbble competition to design Taylor Swift album covers! HAHAHA",
                 links: [
@@ -425,7 +443,7 @@
                 title: "Photography",
                 subtitle: "Little by little, saving bits of space-time.",
                 // Placeholder: Camera
-                image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=1000&auto=format&fit=crop",
+                image: "../assets/images/my_old_camera.jpeg",
                 tags: ["#ThreeYears", "#SoloHobby"],
                 description: "I have a feeling that photography is a ubiquitous human hobby. Seriously. I have yet to meet a single human being who doesn’t like taking photos of beautiful/special things. Perhaps it has something to do with saving bits of space-time or freezing a beautiful, perfect moment. Anyway, I’m building a web-app to host my favourite pictures on GitHub. It is in the works, though, so do look out!"
             },
@@ -445,7 +463,7 @@
                 title: "Travelling",
                 subtitle: "A little part of me that wants to meet the wider world.",
                 // Placeholder: Travel/Map
-                image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1000&auto=format&fit=crop",
+                image: "../assets/images/tianjin_concert_hall.jpeg",
                 tags: ["#SinceForever", "#GroupHobby"],
                 description: "Since I was born, I have been travelling. To different countries, to different homes. When I worked as a receptionist in one of Singapore’s backpacker hostels, I met people from all around the world. Germans who would tell me about their small city near Leipzig. Americans who told me they’d get me a beer if I ever came to visit them in Gasquet, California. Mexicans who loved telling me stories about life in Mexico City. The world is so exciting. And if I had the chance, I would love to visit every country. My first stops in the US: The Statue of Liberty, Central Park, San Francisco’s Chinatown and Gasquet — for my beer!"
             }
