@@ -57,12 +57,21 @@
             margin-bottom: 30px;
         }
         .btn {
+            display: inline-block;
+            padding: 15px 30px;
             background: #fff;
             color: #333;
-            padding: 10px 20px;
+            border-radius: 30px;
             text-decoration: none;
-            border-radius: 5px;
-            display: inline-block;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #f0f0f0;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            transform: translateY(-3px);
         }
         footer {
             background: #333;
@@ -86,9 +95,8 @@
     <section id="hero" class="hero">
         <h2>Hey,</h2>
         <p>Thanks for stopping by Hongpeng's Playground.</p>
-        <p>You're probably here because you got curious from the essay.</p>
-        <p>And so, I want to thank you for your curiosity.</p>
-        <p>I promise, you'll have a lot of time here.</p>
+        <p>I want to thank you for your curiosity, and for giving me a chance.</p>
+        <p>I promise, you'll have a lot of fun in your time here.</p>
         <br>
         <p>Shall we play a game?</p>
         <a href="playground.html" class="btn">Let's Go!</a>
