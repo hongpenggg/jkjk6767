@@ -77,6 +77,24 @@
         .hero h2 { font-size: 3rem; margin-bottom: 10px; }
         .hero p { font-size: 1.2rem; margin-bottom: 20px; max-width: 800px;}
 
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #fff;
+            color: #333;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #f0f0f0;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            transform: translateY(-3px);
+        }
+
         footer {
             background: #333;
             color: #fff;
@@ -373,6 +391,11 @@
             </button>
         </div>
     </div>
+
+    <section class="hero">
+        <h2>Moving on!</h2>
+        <a href="page6.html" class="btn">Next World</a>
+    </section>
 
     <!-- Music Button -->
     <button class="music-btn" id="musicBtn" title="Toggle Music">
