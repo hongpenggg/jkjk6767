@@ -5,19 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hongpeng's Letter</title>
     
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
     
+    <!-- Tailwind CSS v2.2.19 -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
+    <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        /* --- CSS Variables for Theming --- 
-           Since Tailwind v2 CDN doesn't fully support class-based dark mode toggling 
-           without a build step, we use CSS variables for robust color switching.
-        */
+        /* --- CSS Variables for Theming --- */
         :root {
             --bg-image: url('../assets/images/mountain_day.png');
             --text-main: #1a202c;
@@ -25,6 +25,7 @@
             --glass-bg: rgba(255, 255, 255, 0.65);
             --glass-border: rgba(255, 255, 255, 0.3);
             --glass-footer: rgba(255, 255, 255, 0.8);
+            --menu-hover: rgba(0, 0, 0, 0.05);
         }
 
         body.dark {
@@ -34,6 +35,7 @@
             --glass-bg: rgba(0, 0, 0, 0.4);
             --glass-border: rgba(255, 255, 255, 0.08);
             --glass-footer: rgba(0, 0, 0, 0.6);
+            --menu-hover: rgba(255, 255, 255, 0.1);
         }
 
         /* Base Styles */
@@ -44,10 +46,9 @@
             transition: background-image 0.5s ease-in-out, color 0.3s ease;
             background-size: cover;
             background-position: center;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
+            /* Keeps background fixed while content scrolls */
+            background-attachment: fixed; 
             
-            /* Flex Column for Sticky Footer */
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -90,6 +91,8 @@
             opacity: 0;
             overflow: hidden;
             white-space: nowrap;
+            display: inline-block;
+            vertical-align: bottom; /* Aligns font baseline */
             transition: max-width 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
         }
         
@@ -150,34 +153,74 @@
             display: none;
         }
 
-        /* Menu Panel */
+        /* --- Menu Specific Styles --- */
         #menu-panel {
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 60; /* Higher than header */
         }
 
-        /* Utilities missing in Tailwind v2 CDN or custom sizes */
+        #menu-content {
+            opacity: 0;
+            transition: opacity 0.3s ease 0.1s; /* Slight delay so panel expands first */
+            pointer-events: none;
+        }
+
+        /* Logic to show content when menu is open */
+        .menu-open #menu-content {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .menu-link {
+            color: var(--text-main);
+            display: block;
+            padding: 0.5rem 0;
+            font-weight: 500;
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+
+        .menu-link:hover {
+            transform: translateX(4px);
+            color: var(--text-muted);
+            background: var(--menu-hover);
+            border-radius: 0.25rem;
+            padding-left: 0.5rem; /* Indent on hover */
+            margin-left: -0.5rem; /* Compensate for padding to keep alignment */
+        }
+
+        /* Utilities */
         .text-xxs { font-size: 10px; }
         .tracking-widest-xl { letter-spacing: 0.2em; }
         .min-h-300 { min-height: 300px; }
+        
+        /* Ensure Header is always on top but below menu expansion */
+        #main-header { z-index: 50; }
+        #menu-container { z-index: 51; }
     </style>
 </head>
-<body class="antialiased dark"> <audio id="bg-audio" loop autoplay>
+<body class="antialiased dark"> 
+    
+    <audio id="bg-audio" loop autoplay>
         <source src="../assets/audio/bg.mp3" type="audio/mpeg">
     </audio>
 
-    <header id="main-header" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 py-4 px-4 md:px-12">
+    <!-- Header -->
+    <header id="main-header" class="fixed top-0 left-0 w-full transition-all duration-300 py-4 px-4 md:px-12">
         <div id="header-container" class="max-w-7xl mx-auto flex justify-between items-start transition-all duration-300 rounded-3xl p-2">
             
-            <div class="group flex items-center font-sans font-bold text-2xl cursor-default select-none pt-2 pl-2 text-current">
+            <!-- Logo Section -->
+            <!-- Updated: Removed font-normal/text-xl from inner spans so they match parent font -->
+            <div class="group flex items-center font-sans font-bold text-2xl cursor-default select-none pt-2 pl-2 text-current h-12">
                 <span class="relative z-10">H</span>
-                <span class="expand-text font-normal text-xl ml-0.5">ongpeng</span>
+                <span class="expand-text ml-px">ongpeng</span>
                 
                 <span class="mx-1 text-gray-400 slash font-light">\</span>
                 
                 <span class="relative z-10">W</span>
-                <span class="expand-text font-normal text-xl ml-0.5">ei</span>
+                <span class="expand-text ml-px">ei</span>
             </div>
 
+            <!-- Navigation Buttons -->
             <div class="flex items-start gap-3 relative" id="nav-buttons-container">
                 
                 <button id="theme-toggle" class="glass-panel squircle nav-btn h-12 text-sm font-medium shadow-lg hover:shadow-xl focus:outline-none">
@@ -190,24 +233,29 @@
                     <span class="btn-text" id="music-text">Turn Music Off</span>
                 </button>
 
+                <!-- Hamburger Menu Container -->
                 <div id="menu-container" class="relative">
+                    <!-- Trigger -->
                     <button id="menu-btn" class="glass-panel squircle w-12 h-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 z-50 relative focus:outline-none">
                         <i data-lucide="menu" class="w-6 h-6"></i>
                     </button>
 
-                    <div id="menu-panel" class="absolute top-0 right-0 glass-panel squircle shadow-2xl overflow-hidden opacity-0 pointer-events-none w-12 h-12 flex flex-col items-start z-40">
+                    <!-- Panel -->
+                    <div id="menu-panel" class="absolute top-0 right-0 glass-panel squircle shadow-2xl overflow-hidden opacity-0 pointer-events-none w-12 h-12 flex flex-col items-start">
                         
-                        <button id="menu-close" class="absolute top-3 right-3 p-1 rounded-full hover:bg-black hover:bg-opacity-10 transition-colors hidden focus:outline-none">
+                        <!-- Close Button -->
+                        <button id="menu-close" class="absolute top-3 right-3 p-1 rounded-full hover:bg-black hover:bg-opacity-10 transition-colors hidden focus:outline-none z-50">
                             <i data-lucide="x" class="w-5 h-5"></i>
                         </button>
 
-                        <div class="p-6 w-64 pt-16 opacity-0 transition-opacity duration-200 delay-100" id="menu-content">
+                        <!-- Links Content -->
+                        <div class="p-6 w-64 pt-16" id="menu-content">
                             <h3 class="text-xs font-bold uppercase tracking-widest opacity-70 mb-4 border-b border-gray-400 pb-2 border-opacity-30">Menu</h3>
-                            <nav class="flex flex-col space-y-3">
-                                <a href="../index.html" class="hover:translate-x-1 transition-transform font-medium block">Home</a>
-                                <a href="https://hongpenggg.github.io" class="hover:translate-x-1 transition-transform font-medium block">Website</a>
-                                <a href="page4.html" class="hover:translate-x-1 transition-transform font-medium block">Academic Wall</a>
-                                <a href="page100.html" class="hover:translate-x-1 transition-transform font-medium block">Leave A Message</a>
+                            <nav class="flex flex-col space-y-2">
+                                <a href="../index.html" class="menu-link">Home</a>
+                                <a href="https://hongpenggg.github.io" class="menu-link">Website</a>
+                                <a href="page4.html" class="menu-link">Academic Wall</a>
+                                <a href="page100.html" class="menu-link">Leave A Message</a>
                             </nav>
                         </div>
                     </div>
@@ -216,6 +264,7 @@
         </div>
     </header>
 
+    <!-- Main Content -->
     <main class="relative pt-40 px-6 pb-20 flex-grow w-full">
         
         <article class="max-w-2xl mx-auto glass-panel squircle p-8 md:p-12 shadow-2xl transition-all duration-500">
@@ -274,6 +323,7 @@
         </article>
     </main>
 
+    <!-- Footer -->
     <footer class="w-full glass-footer py-6 text-center z-40 mt-auto">
         <div class="max-w-4xl mx-auto px-6">
             <p class="font-sans text-xs md:text-sm opacity-60 mb-3">&copy; 2025 Hongpeng's Playground. All rights reserved.</p>
@@ -284,6 +334,7 @@
         </div>
     </footer>
 
+    <!-- Scripts -->
     <script>
         // Initialize Icons
         lucide.createIcons();
@@ -367,11 +418,13 @@
         function openMenu() {
             menuPanel.style.width = '280px';
             menuPanel.style.height = 'auto';
-            // Use CSS class for custom min-height to avoid inline style complexity
             menuPanel.classList.add('min-h-300');
             menuPanel.style.opacity = '1';
             menuPanel.style.pointerEvents = 'auto';
+            
+            // This class triggers the CSS that reveals #menu-content
             menuContainer.classList.add('menu-open');
+            
             menuBtn.style.opacity = '0';
             
             if (isMenuLocked) {
@@ -387,7 +440,10 @@
             menuPanel.classList.remove('min-h-300');
             menuPanel.style.opacity = '0';
             menuPanel.style.pointerEvents = 'none';
+            
+            // Remove the class to hide content
             menuContainer.classList.remove('menu-open');
+            
             menuBtn.style.opacity = '1';
             menuClose.style.display = 'none';
         }
