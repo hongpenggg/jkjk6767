@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS v2.2.19 -->
+    <!-- Tailwind CSS v2.2.19 (Production CDN) -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
     <!-- Icons -->
@@ -19,23 +19,35 @@
     <style>
         /* --- CSS Variables for Theming --- */
         :root {
+            /* Light Mode Variables */
             --bg-image: url('../assets/images/mountain_day.png');
             --text-main: #1a202c;
             --text-muted: #4a5568;
-            --glass-bg: rgba(255, 255, 255, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.3);
-            --glass-footer: rgba(255, 255, 255, 0.8);
+            
+            /* Enhanced Glass Effect for Light Mode */
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            --glass-footer: rgba(255, 255, 255, 0.85);
+            
             --menu-hover: rgba(0, 0, 0, 0.05);
+            --invert-filter: 0;
         }
 
         body.dark {
+            /* Dark Mode Variables */
             --bg-image: url('../assets/images/mountain_night.png');
-            --text-main: #e2e8f0;
-            --text-muted: #a0aec0;
-            --glass-bg: rgba(0, 0, 0, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-footer: rgba(0, 0, 0, 0.6);
-            --menu-hover: rgba(255, 255, 255, 0.1);
+            --text-main: #f7fafc;
+            --text-muted: #cbd5e0;
+            
+            /* Enhanced Glass Effect for Dark Mode */
+            --glass-bg: rgba(0, 0, 0, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            --glass-footer: rgba(0, 0, 0, 0.75);
+            
+            --menu-hover: rgba(255, 255, 255, 0.15);
+            --invert-filter: 1;
         }
 
         /* Base Styles */
@@ -46,36 +58,36 @@
             transition: background-image 0.5s ease-in-out, color 0.3s ease;
             background-size: cover;
             background-position: center;
-            /* Keeps background fixed while content scrolls */
-            background-attachment: fixed; 
+            background-attachment: fixed; /* Parallax-like fixed background */
             
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         /* Typography overrides */
         .font-serif { font-family: 'Merriweather', serif; }
         .font-sans { font-family: 'Inter', sans-serif; }
 
-        /* Frosted Glass Utilities */
+        /* --- Frosted Glass Utilities --- */
         .glass-panel {
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            transition: background 0.3s ease, border-color 0.3s ease;
+            box-shadow: var(--glass-shadow);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: all 0.3s ease;
         }
 
         .glass-footer {
             background: var(--glass-footer);
             border-top: 1px solid var(--glass-border);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
 
-        /* Shape Utilities */
-        .squircle { border-radius: 18px; }
+        .squircle { border-radius: 20px; }
 
         /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
@@ -85,14 +97,14 @@
             border-radius: 4px;
         }
 
-        /* Animations */
+        /* --- Animations --- */
         .expand-text {
             max-width: 0;
             opacity: 0;
             overflow: hidden;
             white-space: nowrap;
             display: inline-block;
-            vertical-align: bottom; /* Aligns font baseline */
+            vertical-align: bottom;
             transition: max-width 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
         }
         
@@ -111,7 +123,7 @@
             color: inherit;
         }
 
-        /* Nav Buttons */
+        /* --- Navigation Buttons --- */
         .nav-btn {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             width: 48px; 
@@ -153,20 +165,47 @@
             display: none;
         }
 
-        /* --- Menu Specific Styles --- */
+        /* --- Menu Specific Logic --- */
+        /* The container determines the width of the menu area in the flex row */
+        #menu-container {
+            width: 3rem; /* w-12 equivalent */
+            transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* When open, it expands, pushing left siblings */
+        #menu-container.menu-open,
+        #menu-container:hover {
+            width: 16rem; /* Expanded width */
+        }
+
+        /* The panel sits inside the container */
         #menu-panel {
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 60; /* Higher than header */
+            width: 100%;
+            height: 3rem; /* Starts as button height */
+            min-height: 3rem;
+            overflow: hidden;
+            transition: height 0.5s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease;
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 60;
+        }
+
+        /* Expand height on hover/open */
+        #menu-container:hover #menu-panel,
+        #menu-container.menu-open #menu-panel {
+            height: auto;
+            min-height: 320px;
         }
 
         #menu-content {
             opacity: 0;
-            transition: opacity 0.3s ease 0.1s; /* Slight delay so panel expands first */
+            transition: opacity 0.3s ease 0.1s;
             pointer-events: none;
         }
 
-        /* Logic to show content when menu is open */
-        .menu-open #menu-content {
+        #menu-container:hover #menu-content,
+        #menu-container.menu-open #menu-content {
             opacity: 1;
             pointer-events: auto;
         }
@@ -174,82 +213,93 @@
         .menu-link {
             color: var(--text-main);
             display: block;
-            padding: 0.5rem 0;
+            padding: 0.75rem 1rem;
             font-weight: 500;
-            transition: transform 0.2s ease, color 0.2s ease;
+            transition: all 0.2s ease;
+            border-radius: 0.5rem;
         }
 
         .menu-link:hover {
-            transform: translateX(4px);
-            color: var(--text-muted);
+            color: var(--text-main);
             background: var(--menu-hover);
-            border-radius: 0.25rem;
-            padding-left: 0.5rem; /* Indent on hover */
-            margin-left: -0.5rem; /* Compensate for padding to keep alignment */
+            transform: translateX(4px);
         }
 
-        /* Utilities */
+        /* --- Snow Canvas --- */
+        #snow-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Let clicks pass through */
+            z-index: 1; /* Behind header (50), above background */
+        }
+
+        /* --- Utilities --- */
         .text-xxs { font-size: 10px; }
         .tracking-widest-xl { letter-spacing: 0.2em; }
-        .min-h-300 { min-height: 300px; }
         
-        /* Ensure Header is always on top but below menu expansion */
         #main-header { z-index: 50; }
-        #menu-container { z-index: 51; }
     </style>
 </head>
 <body class="antialiased dark"> 
     
+    <!-- Audio Source -->
     <audio id="bg-audio" loop autoplay>
         <source src="../assets/audio/bg.mp3" type="audio/mpeg">
     </audio>
 
+    <!-- Snow Canvas -->
+    <canvas id="snow-canvas"></canvas>
+
     <!-- Header -->
     <header id="main-header" class="fixed top-0 left-0 w-full transition-all duration-300 py-4 px-4 md:px-12">
-        <div id="header-container" class="max-w-7xl mx-auto flex justify-between items-start transition-all duration-300 rounded-3xl p-2">
+        <div id="header-container" class="max-w-7xl mx-auto flex justify-between items-start transition-all duration-300 rounded-3xl p-2 relative z-50">
             
             <!-- Logo Section -->
-            <!-- Updated: Removed font-normal/text-xl from inner spans so they match parent font -->
             <div class="group flex items-center font-sans font-bold text-2xl cursor-default select-none pt-2 pl-2 text-current h-12">
                 <span class="relative z-10">H</span>
                 <span class="expand-text ml-px">ongpeng</span>
-                
                 <span class="mx-1 text-gray-400 slash font-light">\</span>
-                
                 <span class="relative z-10">W</span>
                 <span class="expand-text ml-px">ei</span>
             </div>
 
-            <!-- Navigation Buttons -->
-            <div class="flex items-start gap-3 relative" id="nav-buttons-container">
+            <!-- Navigation Buttons Container -->
+            <!-- Flex container aligned right. Growing the last item (menu) pushes others left. -->
+            <div class="flex items-start gap-3 relative justify-end" id="nav-buttons-container">
                 
-                <button id="theme-toggle" class="glass-panel squircle nav-btn h-12 text-sm font-medium shadow-lg hover:shadow-xl focus:outline-none">
-                    <i data-lucide="moon" class="btn-icon w-5 h-5"></i>
+                <!-- Theme Toggle -->
+                <button id="theme-toggle" class="glass-panel squircle nav-btn h-12 text-sm font-medium shadow-lg hover:shadow-xl focus:outline-none z-20">
+                    <i data-lucide="sun" class="btn-icon w-5 h-5"></i>
                     <span class="btn-text" id="theme-text">Switch to Light Mode</span>
                 </button>
 
-                <button id="music-toggle" class="glass-panel squircle nav-btn h-12 text-sm font-medium shadow-lg hover:shadow-xl focus:outline-none">
+                <!-- Music Toggle -->
+                <button id="music-toggle" class="glass-panel squircle nav-btn h-12 text-sm font-medium shadow-lg hover:shadow-xl focus:outline-none z-20">
                     <i data-lucide="volume-2" class="btn-icon w-5 h-5"></i>
                     <span class="btn-text" id="music-text">Turn Music Off</span>
                 </button>
 
-                <!-- Hamburger Menu Container -->
-                <div id="menu-container" class="relative">
-                    <!-- Trigger -->
-                    <button id="menu-btn" class="glass-panel squircle w-12 h-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 z-50 relative focus:outline-none">
-                        <i data-lucide="menu" class="w-6 h-6"></i>
-                    </button>
-
-                    <!-- Panel -->
-                    <div id="menu-panel" class="absolute top-0 right-0 glass-panel squircle shadow-2xl overflow-hidden opacity-0 pointer-events-none w-12 h-12 flex flex-col items-start">
+                <!-- Hamburger Menu Container (Resizable Wrapper) -->
+                <div id="menu-container" class="relative z-30 h-12">
+                    
+                    <!-- Expanding Panel (Absolute inside relative container) -->
+                    <div id="menu-panel" class="glass-panel squircle shadow-2xl flex flex-col items-start">
                         
-                        <!-- Close Button -->
-                        <button id="menu-close" class="absolute top-3 right-3 p-1 rounded-full hover:bg-black hover:bg-opacity-10 transition-colors hidden focus:outline-none z-50">
+                        <!-- Visible Trigger Icon (Menu) - Fades out on hover -->
+                        <div id="menu-trigger-icon" class="absolute top-0 right-0 w-12 h-12 flex items-center justify-center transition-opacity duration-300 pointer-events-none">
+                            <i data-lucide="menu" class="w-6 h-6"></i>
+                        </div>
+
+                        <!-- Close Button (Only for click-lock mode) -->
+                        <button id="menu-close" class="absolute top-3 right-3 p-1 rounded-full hover:bg-gray-500 hover:bg-opacity-20 transition-colors hidden focus:outline-none z-50">
                             <i data-lucide="x" class="w-5 h-5"></i>
                         </button>
 
                         <!-- Links Content -->
-                        <div class="p-6 w-64 pt-16" id="menu-content">
+                        <div class="p-6 w-full pt-16 flex flex-col h-full" id="menu-content">
                             <h3 class="text-xs font-bold uppercase tracking-widest opacity-70 mb-4 border-b border-gray-400 pb-2 border-opacity-30">Menu</h3>
                             <nav class="flex flex-col space-y-2">
                                 <a href="../index.html" class="menu-link">Home</a>
@@ -260,13 +310,13 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="relative pt-40 px-6 pb-20 flex-grow w-full">
-        
+    <main class="relative pt-40 px-6 pb-20 flex-grow w-full z-10">
         <article class="max-w-2xl mx-auto glass-panel squircle p-8 md:p-12 shadow-2xl transition-all duration-500">
             
             <div class="mb-10 text-center border-b border-gray-400 pb-8 border-opacity-20">
@@ -313,7 +363,7 @@
                 <p class="mb-6 italic">With deep respect and unwavering determination,</p>
                 
                 <div class="my-6">
-                    <img src="../assets/images/signature.png" alt="Hongpeng's Signature" class="h-16 md:h-20 filter transition-all opacity-90" style="filter: invert(var(--signature-invert, 1));" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                    <img src="../assets/images/signature.png" alt="Hongpeng's Signature" class="h-16 md:h-20 filter transition-all opacity-90" style="filter: invert(var(--invert-filter, 1));" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
                     <p style="display:none" class="font-cursive text-2xl">Hongpeng</p>
                 </div>
                 
@@ -324,15 +374,23 @@
     </main>
 
     <!-- Footer -->
-    <footer class="w-full glass-footer py-6 text-center z-40 mt-auto">
+    <footer class="w-full glass-footer py-6 text-center z-40 mt-auto relative">
         <div class="max-w-4xl mx-auto px-6">
             <p class="font-sans text-xs md:text-sm opacity-60 mb-3">&copy; 2025 Hongpeng's Playground. All rights reserved.</p>
-            
             <p class="font-sans text-xxs md:text-xs opacity-40 leading-relaxed max-w-2xl mx-auto">
                 The music on this site is: Beethoven's Moonlight Sonata; Chopin's Nocturne; Dmitri Shostakovich's Waltz; Johannes Brahms' Hungarian Dance; Mozart's Lacrimosa; Beethoven's Ode an die Freude; and Mozart's Rondo Alla Turca
             </p>
         </div>
     </footer>
+
+    <!-- Snow Toggle Fixed Button -->
+    <button id="snow-toggle" class="fixed bottom-6 right-6 glass-panel squircle w-12 h-12 flex items-center justify-center shadow-2xl hover:scale-105 transition-transform z-50 focus:outline-none" title="Toggle Snow">
+        <div class="relative w-6 h-6 flex items-center justify-center">
+            <i data-lucide="snowflake" class="w-6 h-6 absolute"></i>
+            <!-- Line through for 'Stop Snow' state (default) -->
+            <i data-lucide="slash" class="w-6 h-6 absolute text-red-400 opacity-80" id="snow-slash"></i>
+        </div>
+    </button>
 
     <!-- Scripts -->
     <script>
@@ -346,37 +404,42 @@
         const musicBtn = document.getElementById('music-toggle');
         const musicText = document.getElementById('music-text');
         const audio = document.getElementById('bg-audio');
-        const header = document.getElementById('main-header');
         const headerContainer = document.getElementById('header-container');
         
         // Menu Elements
         const menuContainer = document.getElementById('menu-container');
-        const menuBtn = document.getElementById('menu-btn');
-        const menuPanel = document.getElementById('menu-panel');
+        const menuTriggerIcon = document.getElementById('menu-trigger-icon');
         const menuClose = document.getElementById('menu-close');
 
         // --- State ---
         let isDark = true; 
         let isMusicPlaying = true;
         let isMenuLocked = false;
+        let isSnowing = true;
 
         // --- Theme Logic ---
         function updateThemeUI() {
-            const moonIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon w-5 h-5"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+            // Updated Logic:
+            // If Dark Mode -> Show Sun (Action: Go Light)
+            // If Light Mode -> Show Moon (Action: Go Dark)
+            
             const sunIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon w-5 h-5"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>';
+            const moonIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon w-5 h-5"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
 
             const signatureImg = document.querySelector('img[alt="Hongpeng\'s Signature"]');
 
             if (isDark) {
                 body.classList.add('dark');
-                themeBtn.querySelector('.btn-icon').outerHTML = moonIcon;
+                // Current is Dark, show Sun to switch
+                themeBtn.querySelector('.btn-icon').outerHTML = sunIcon;
                 themeText.textContent = "Switch to Light Mode";
-                if(signatureImg) signatureImg.style.setProperty('--signature-invert', '1');
+                if(signatureImg) signatureImg.style.setProperty('--invert-filter', '1');
             } else {
                 body.classList.remove('dark');
-                themeBtn.querySelector('.btn-icon').outerHTML = sunIcon;
+                // Current is Light, show Moon to switch
+                themeBtn.querySelector('.btn-icon').outerHTML = moonIcon;
                 themeText.textContent = "Switch to Dark Mode";
-                if(signatureImg) signatureImg.style.setProperty('--signature-invert', '0');
+                if(signatureImg) signatureImg.style.setProperty('--invert-filter', '0');
             }
         }
 
@@ -406,7 +469,6 @@
             updateMusicUI();
         });
 
-        // Auto-play workaround
         document.body.addEventListener('click', function() {
             if(isMusicPlaying && audio.paused) {
                 audio.play();
@@ -414,18 +476,10 @@
         }, { once: true });
 
 
-        // --- Menu Logic ---
+        // --- Menu Logic (Displacement Animation) ---
         function openMenu() {
-            menuPanel.style.width = '280px';
-            menuPanel.style.height = 'auto';
-            menuPanel.classList.add('min-h-300');
-            menuPanel.style.opacity = '1';
-            menuPanel.style.pointerEvents = 'auto';
-            
-            // This class triggers the CSS that reveals #menu-content
             menuContainer.classList.add('menu-open');
-            
-            menuBtn.style.opacity = '0';
+            menuTriggerIcon.style.opacity = '0';
             
             if (isMenuLocked) {
                 menuClose.style.display = 'block';
@@ -433,44 +487,33 @@
         }
 
         function closeMenu() {
-            if (isMenuLocked) return; 
-            
-            menuPanel.style.width = '3rem'; 
-            menuPanel.style.height = '3rem'; 
-            menuPanel.classList.remove('min-h-300');
-            menuPanel.style.opacity = '0';
-            menuPanel.style.pointerEvents = 'none';
-            
-            // Remove the class to hide content
+            if (isMenuLocked) return;
             menuContainer.classList.remove('menu-open');
-            
-            menuBtn.style.opacity = '1';
+            menuTriggerIcon.style.opacity = '1';
             menuClose.style.display = 'none';
         }
 
-        // Hover Events
-        menuBtn.addEventListener('mouseenter', openMenu);
-        menuPanel.addEventListener('mouseenter', openMenu);
-        
+        menuContainer.addEventListener('mouseenter', openMenu);
         menuContainer.addEventListener('mouseleave', () => {
             if (!isMenuLocked) closeMenu();
         });
 
-        // Click to Lock
-        menuBtn.addEventListener('click', (e) => {
+        // Click on the container triggers lock
+        menuContainer.addEventListener('click', (e) => {
             e.stopPropagation();
+            // Don't toggle if clicking links
+            if (e.target.tagName === 'A') return;
+            
             isMenuLocked = true;
             openMenu();
         });
 
-        // Close Button
         menuClose.addEventListener('click', (e) => {
             e.stopPropagation();
             isMenuLocked = false;
             closeMenu();
         });
 
-        // Close if clicking outside
         document.addEventListener('click', (e) => {
             if (isMenuLocked && !menuContainer.contains(e.target)) {
                 isMenuLocked = false;
@@ -482,14 +525,104 @@
         window.addEventListener('scroll', () => {
             if (window.scrollY > 50) {
                 headerContainer.classList.add('glass-panel');
-                headerContainer.classList.add('shadow-lg');
             } else {
                 headerContainer.classList.remove('glass-panel');
-                headerContainer.classList.remove('shadow-lg');
             }
         });
 
-        // Initialize
+        // --- Snow Effect Engine ---
+        const canvas = document.getElementById('snow-canvas');
+        const ctx = canvas.getContext('2d');
+        const snowToggleBtn = document.getElementById('snow-toggle');
+        const snowSlash = document.getElementById('snow-slash');
+
+        let width, height;
+        let particles = [];
+        let animationFrame;
+
+        // Resize
+        function resizeCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Snow Particle Class
+        class Snowflake {
+            constructor() {
+                this.reset(true);
+            }
+
+            reset(initial = false) {
+                this.x = Math.random() * width;
+                // If initial, spawn randomly on screen. If not, spawn at top.
+                this.y = initial ? Math.random() * height : -5;
+                this.radius = Math.random() * 2 + 0.5; // Small flakes: 0.5px to 2.5px
+                this.speed = Math.random() * 1 + 0.5; // Slow fall
+                this.drift = Math.random() * Math.PI * 2;
+                this.driftSpeed = Math.random() * 0.05;
+                this.opacity = Math.random() * 0.5 + 0.3;
+            }
+
+            update() {
+                this.y += this.speed;
+                this.drift += this.driftSpeed;
+                this.x += Math.sin(this.drift) * 0.5; // Gentle sway
+
+                // Reset if out of bounds
+                if (this.y > height) {
+                    this.reset(false);
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.fill();
+                ctx.closePath();
+            }
+        }
+
+        // Initialize Particles
+        function initSnow() {
+            particles = [];
+            const particleCount = Math.floor(width * 0.15); // Adjust density based on width
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Snowflake());
+            }
+        }
+
+        function animateSnow() {
+            if (!isSnowing) return;
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            animationFrame = requestAnimationFrame(animateSnow);
+        }
+
+        // Toggle Logic
+        snowToggleBtn.addEventListener('click', () => {
+            isSnowing = !isSnowing;
+            if (isSnowing) {
+                snowSlash.style.display = 'block'; // Show "Stop" slash
+                animateSnow();
+            } else {
+                snowSlash.style.display = 'none'; // Show clean snowflake
+                ctx.clearRect(0, 0, width, height);
+                cancelAnimationFrame(animationFrame);
+            }
+        });
+
+        // Start Snow
+        initSnow();
+        animateSnow();
+
+
+        // --- Init ---
         updateThemeUI();
         
     </script>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hongpeng's Letter</title>
+    <title>Hongpeng's Playground</title>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,6 +32,7 @@
             
             --menu-hover: rgba(0, 0, 0, 0.05);
             --invert-filter: 0;
+            --btn-glow: rgba(255, 255, 255, 0.6);
         }
 
         body.dark {
@@ -48,6 +49,7 @@
             
             --menu-hover: rgba(255, 255, 255, 0.15);
             --invert-filter: 1;
+            --btn-glow: rgba(255, 255, 255, 0.2);
         }
 
         /* Base Styles */
@@ -56,9 +58,12 @@
             background-image: var(--bg-image);
             color: var(--text-main);
             transition: background-image 0.5s ease-in-out, color 0.3s ease;
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed; /* Parallax-like fixed background */
+            
+            /* Background Logic: Fill screen, stay fixed, do not stretch weirdly */
+            background-size: cover; 
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed; 
             
             display: flex;
             flex-direction: column;
@@ -123,6 +128,23 @@
             color: inherit;
         }
 
+        /* Shake Animation for Snow Button */
+        @keyframes gentle-shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            50% { transform: rotate(10deg); }
+            75% { transform: rotate(-5deg); }
+        }
+
+        .hover-shake:hover .icon-shake-target {
+            animation: gentle-shake 0.5s ease-in-out infinite;
+        }
+
+        .hover-glow:hover {
+            box-shadow: 0 0 15px var(--btn-glow);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
         /* --- Navigation Buttons --- */
         .nav-btn {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -166,22 +188,19 @@
         }
 
         /* --- Menu Specific Logic --- */
-        /* The container determines the width of the menu area in the flex row */
         #menu-container {
             width: 3rem; /* w-12 equivalent */
             transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* When open, it expands, pushing left siblings */
         #menu-container.menu-open,
         #menu-container:hover {
             width: 16rem; /* Expanded width */
         }
 
-        /* The panel sits inside the container */
         #menu-panel {
             width: 100%;
-            height: 3rem; /* Starts as button height */
+            height: 3rem; 
             min-height: 3rem;
             overflow: hidden;
             transition: height 0.5s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease;
@@ -191,7 +210,6 @@
             z-index: 60;
         }
 
-        /* Expand height on hover/open */
         #menu-container:hover #menu-panel,
         #menu-container.menu-open #menu-panel {
             height: auto;
@@ -232,8 +250,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none; /* Let clicks pass through */
-            z-index: 1; /* Behind header (50), above background */
+            pointer-events: none; /* Let clicks pass through to buttons/text */
+            z-index: 9999; /* Highest layer, above header and text */
         }
 
         /* --- Utilities --- */
@@ -267,7 +285,6 @@
             </div>
 
             <!-- Navigation Buttons Container -->
-            <!-- Flex container aligned right. Growing the last item (menu) pushes others left. -->
             <div class="flex items-start gap-3 relative justify-end" id="nav-buttons-container">
                 
                 <!-- Theme Toggle -->
@@ -282,18 +299,18 @@
                     <span class="btn-text" id="music-text">Turn Music Off</span>
                 </button>
 
-                <!-- Hamburger Menu Container (Resizable Wrapper) -->
+                <!-- Hamburger Menu Container -->
                 <div id="menu-container" class="relative z-30 h-12">
                     
-                    <!-- Expanding Panel (Absolute inside relative container) -->
+                    <!-- Expanding Panel -->
                     <div id="menu-panel" class="glass-panel squircle shadow-2xl flex flex-col items-start">
                         
-                        <!-- Visible Trigger Icon (Menu) - Fades out on hover -->
+                        <!-- Visible Trigger Icon -->
                         <div id="menu-trigger-icon" class="absolute top-0 right-0 w-12 h-12 flex items-center justify-center transition-opacity duration-300 pointer-events-none">
                             <i data-lucide="menu" class="w-6 h-6"></i>
                         </div>
 
-                        <!-- Close Button (Only for click-lock mode) -->
+                        <!-- Close Button -->
                         <button id="menu-close" class="absolute top-3 right-3 p-1 rounded-full hover:bg-gray-500 hover:bg-opacity-20 transition-colors hidden focus:outline-none z-50">
                             <i data-lucide="x" class="w-5 h-5"></i>
                         </button>
@@ -306,6 +323,7 @@
                                 <a href="https://hongpenggg.github.io" class="menu-link">Website</a>
                                 <a href="page4.html" class="menu-link">Academic Wall</a>
                                 <a href="https://beacons.ai/hongpeng" class="menu-link">Leave A Message</a>
+                                <a href="https://hongpenggg.github.io/landing" class="menu-link">Back to Landing Page</a>
                             </nav>
                         </div>
                     </div>
@@ -384,8 +402,8 @@
     </footer>
 
     <!-- Snow Toggle Fixed Button -->
-    <button id="snow-toggle" class="fixed bottom-6 right-6 glass-panel squircle w-12 h-12 flex items-center justify-center shadow-2xl hover:scale-105 transition-transform z-50 focus:outline-none" title="Toggle Snow">
-        <div class="relative w-6 h-6 flex items-center justify-center">
+    <button id="snow-toggle" class="fixed bottom-6 right-6 glass-panel squircle w-12 h-12 flex items-center justify-center shadow-2xl transition-all z-50 focus:outline-none hover-shake hover-glow" title="Toggle Snow">
+        <div class="relative w-6 h-6 flex items-center justify-center icon-shake-target">
             <i data-lucide="snowflake" class="w-6 h-6 absolute"></i>
             <!-- Line through for 'Stop Snow' state (default) -->
             <i data-lucide="slash" class="w-6 h-6 absolute text-red-400 opacity-80" id="snow-slash"></i>
@@ -419,9 +437,8 @@
 
         // --- Theme Logic ---
         function updateThemeUI() {
-            // Updated Logic:
-            // If Dark Mode -> Show Sun (Action: Go Light)
-            // If Light Mode -> Show Moon (Action: Go Dark)
+            // Logic: Dark Mode -> Show Sun (Switch to Light)
+            //        Light Mode -> Show Moon (Switch to Dark)
             
             const sunIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon w-5 h-5"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>';
             const moonIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon w-5 h-5"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
@@ -430,13 +447,11 @@
 
             if (isDark) {
                 body.classList.add('dark');
-                // Current is Dark, show Sun to switch
                 themeBtn.querySelector('.btn-icon').outerHTML = sunIcon;
                 themeText.textContent = "Switch to Light Mode";
                 if(signatureImg) signatureImg.style.setProperty('--invert-filter', '1');
             } else {
                 body.classList.remove('dark');
-                // Current is Light, show Moon to switch
                 themeBtn.querySelector('.btn-icon').outerHTML = moonIcon;
                 themeText.textContent = "Switch to Dark Mode";
                 if(signatureImg) signatureImg.style.setProperty('--invert-filter', '0');
@@ -501,9 +516,7 @@
         // Click on the container triggers lock
         menuContainer.addEventListener('click', (e) => {
             e.stopPropagation();
-            // Don't toggle if clicking links
             if (e.target.tagName === 'A') return;
-            
             isMenuLocked = true;
             openMenu();
         });
@@ -556,9 +569,8 @@
 
             reset(initial = false) {
                 this.x = Math.random() * width;
-                // If initial, spawn randomly on screen. If not, spawn at top.
                 this.y = initial ? Math.random() * height : -5;
-                this.radius = Math.random() * 2 + 0.5; // Small flakes: 0.5px to 2.5px
+                this.radius = Math.random() * 2 + 0.5; // Small flakes
                 this.speed = Math.random() * 1 + 0.5; // Slow fall
                 this.drift = Math.random() * Math.PI * 2;
                 this.driftSpeed = Math.random() * 0.05;
@@ -568,7 +580,7 @@
             update() {
                 this.y += this.speed;
                 this.drift += this.driftSpeed;
-                this.x += Math.sin(this.drift) * 0.5; // Gentle sway
+                this.x += Math.sin(this.drift) * 0.5; 
 
                 // Reset if out of bounds
                 if (this.y > height) {
@@ -588,7 +600,7 @@
         // Initialize Particles
         function initSnow() {
             particles = [];
-            const particleCount = Math.floor(width * 0.15); // Adjust density based on width
+            const particleCount = Math.floor(width * 0.15); 
             for (let i = 0; i < particleCount; i++) {
                 particles.push(new Snowflake());
             }
@@ -608,10 +620,10 @@
         snowToggleBtn.addEventListener('click', () => {
             isSnowing = !isSnowing;
             if (isSnowing) {
-                snowSlash.style.display = 'block'; // Show "Stop" slash
+                snowSlash.style.display = 'block'; 
                 animateSnow();
             } else {
-                snowSlash.style.display = 'none'; // Show clean snowflake
+                snowSlash.style.display = 'none'; 
                 ctx.clearRect(0, 0, width, height);
                 cancelAnimationFrame(animationFrame);
             }
