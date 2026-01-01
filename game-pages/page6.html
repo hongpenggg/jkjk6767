@@ -1,19 +1,20 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="dark opacity-0 transition-opacity duration-700">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A letter to the Admissions Officer">
     <title>Hongpeng's Letter</title>
     
-    <!-- Fonts: Inter for UI, Merriweather for Reading -->
+    <!-- Fonts: Inter (UI) & Merriweather (Reading) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS (JIT Compiler for Standalone Usage) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Tailwind Config -->
+    <!-- Configuration -->
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -24,10 +25,14 @@
                         serif: ['Merriweather', 'serif'],
                     },
                     colors: {
+                        // Custom glass colors for better visibility
                         glass: {
-                            light: 'rgba(255, 255, 255, 0.1)',
-                            dark: 'rgba(0, 0, 0, 0.3)',
+                            light: 'rgba(255, 255, 255, 0.7)',
+                            dark: 'rgba(20, 20, 20, 0.6)',
                         }
+                    },
+                    transitionTimingFunction: {
+                        'snappy': 'cubic-bezier(0.2, 0.8, 0.2, 1)', // Apple-like snap
                     }
                 }
             }
@@ -38,189 +43,224 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        /* --- Background & Layout --- */
-        body {
-            transition: background-image 0.5s ease-in-out;
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed; /* KEEPS IMAGE STATIC */
-            background-repeat: no-repeat;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+        /* --- Core Layout & Background --- */
+        html {
+            scroll-behavior: smooth;
         }
 
-        /* Default Dark Mode Background */
+        body {
+            /* Background Logic */
+            background-color: #1a1a1a; /* Fallback */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Parallax-free fixed bg */
+            background-repeat: no-repeat;
+            
+            /* Flex Column for Footer Pushing */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            
+            /* Smooth transitions for theme switch */
+            transition: background-image 0.5s ease-in-out, color 0.3s ease;
+        }
+
+        /* Dark Mode Image */
         body.dark {
-            background-image: url('../assets/images/mountain_night.png');
+            background-image: url('https://hongpenggg.github.io/jkjk6767/assets/images/mountain_night.png');
             color: #e2e8f0;
         }
 
-        /* Light Mode Background */
+        /* Light Mode Image */
         body:not(.dark) {
-            background-image: url('../assets/images/mountain_day.png');
+            background-image: url('https://hongpenggg.github.io/jkjk6767/assets/images/mountain_day.png');
             color: #1a202c;
         }
 
-        /* --- Glassmorphism --- */
+        /* --- Glassmorphism Engine --- */
         .glass-panel {
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.125);
         }
 
         .dark .glass-panel {
-            background: rgba(0, 0, 0, 0.4);
-            border-color: rgba(255, 255, 255, 0.05);
+            background-color: rgba(10, 10, 10, 0.5); /* Deep dark glass */
+            border-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
         }
 
         body:not(.dark) .glass-panel {
-            background: rgba(255, 255, 255, 0.65);
-            border-color: rgba(255, 255, 255, 0.3);
+            background-color: rgba(255, 255, 255, 0.65); /* Frosty light glass */
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         }
 
         .squircle { border-radius: 18px; }
 
-        /* --- Scrollbar --- */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 4px; }
-        ::selection { background: rgba(147, 197, 253, 0.3); }
+        /* --- Refined Typography --- */
+        ::selection { background: rgba(59, 130, 246, 0.4); }
+
+        /* --- Snappy Animations --- */
         
-        /* --- Animations --- */
-        /* Logo Expansion */
-        .expand-text {
+        /* 1. Logo Expansion */
+        .logo-text-hidden {
             max-width: 0;
             opacity: 0;
             overflow: hidden;
-            white-space: nowrap;
-            transition: max-width 0.4s ease, opacity 0.3s ease;
             display: inline-block;
-            vertical-align: bottom; /* Aligns font baselines */
+            white-space: nowrap;
+            transition: max-width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease-out;
+            vertical-align: bottom;
         }
         
-        .group:hover .expand-text {
-            max-width: 200px;
+        .group:hover .logo-text-hidden {
+            max-width: 140px; /* Precise width to fit name */
             opacity: 1;
         }
 
-        .slash {
-            transition: transform 0.4s ease;
+        .logo-slash {
             display: inline-block;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy spring effect */
+            margin: 0 2px;
         }
         
-        .group:hover .slash {
-            transform: rotate(20deg) scale(1.1);
+        .group:hover .logo-slash {
+            transform: rotate(20deg) scale(1.1) translateX(2px);
         }
 
-        /* Button Expansion */
+        /* 2. Button Expansion */
         .nav-btn {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 48px;
+            width: 48px; /* Icon width */
+            transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
             overflow: hidden;
+            white-space: nowrap;
             display: flex;
             align-items: center;
-            justify-content: center;
-            white-space: nowrap;
         }
 
         .nav-btn:hover {
-            width: auto; 
-            padding-left: 1.25rem;
+            width: auto; /* Allow auto width on hover */
             padding-right: 1.25rem;
         }
 
-        .nav-btn .btn-text {
-            position: absolute;
+        .nav-btn .btn-content {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* Icon fade out */
+        .nav-btn i {
+            flex-shrink: 0;
+            margin: 0 12px;
+            transition: opacity 0.2s ease, transform 0.3s ease;
+        }
+
+        .nav-btn:hover i {
+            opacity: 0;
+            transform: scale(0.8);
+            width: 0;
+            margin: 0;
+        }
+
+        /* Text fade in */
+        .nav-btn span {
             opacity: 0;
             transform: translateX(10px);
-            transition: all 0.3s ease;
-            pointer-events: none;
+            transition: opacity 0.3s 0.1s ease, transform 0.3s 0.1s ease;
+            position: absolute;
+            left: 16px;
         }
 
-        .nav-btn:hover .btn-text {
-            position: static;
+        .nav-btn:hover span {
             opacity: 1;
             transform: translateX(0);
+            position: static;
         }
 
-        .nav-btn .btn-icon {
-            transition: all 0.3s ease;
-        }
-
-        .nav-btn:hover .btn-icon {
-            opacity: 0;
-            width: 0;
-            display: none;
-        }
+        /* --- Scrollbar --- */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.4); border-radius: 10px; }
     </style>
 </head>
-<body class="antialiased overflow-x-hidden">
+
+<!-- Body Opacity 0 initially to prevent FOUC, fades in via JS -->
+<body class="antialiased opacity-0 onload-fade-in">
 
     <!-- Audio Player -->
-    <audio id="bg-audio" loop autoplay>
+    <audio id="bg-audio" loop preload="auto">
         <source src="../assets/audio/bg.mp3" type="audio/mpeg">
     </audio>
 
     <!-- Header -->
-    <header id="main-header" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 py-4 px-6 md:px-12">
-        <div id="header-container" class="max-w-7xl mx-auto flex justify-between items-start transition-all duration-300 rounded-3xl p-2">
+    <header id="main-header" class="fixed top-0 left-0 w-full z-50 transition-all duration-300 py-6 px-4 md:px-8">
+        <div id="header-container" class="max-w-7xl mx-auto flex justify-between items-start transition-all duration-500 rounded-2xl p-2">
             
-            <!-- Logo Top Left -->
-            <!-- Added font-bold to parent to ensure consistent weight -->
-            <div class="group flex items-center font-sans font-bold text-2xl cursor-default select-none pt-2 pl-2">
-                <!-- H -->
+            <!-- 1. Interactive Logo -->
+            <!-- Using tracking-tighter and consistent font-bold to match H/W with names -->
+            <div class="group flex items-center font-sans font-bold text-2xl tracking-tight cursor-default select-none pt-2 pl-2 text-current">
                 <span class="relative z-10">H</span>
-                <!-- ongpeng -->
-                <span class="expand-text font-bold text-2xl ml-[1px]">ongpeng</span>
+                <span class="logo-text-hidden">ongpeng</span>
                 
-                <!-- Slash -->
-                <span class="mx-1 text-gray-400 slash group-hover:text-current font-light">\</span>
+                <span class="logo-slash text-gray-400 font-light">\</span>
                 
-                <!-- W -->
                 <span class="relative z-10">W</span>
-                <!-- ei -->
-                <span class="expand-text font-bold text-2xl ml-[1px]">ei</span>
+                <span class="logo-text-hidden">ei</span>
             </div>
 
-            <!-- Top Right Buttons -->
+            <!-- 2. Interactive Controls -->
             <div class="flex items-start gap-3 relative" id="nav-buttons-container">
                 
                 <!-- Dark/Light Mode Toggle -->
-                <button id="theme-toggle" class="glass-panel squircle nav-btn h-12 text-sm font-medium shadow-lg hover:shadow-xl">
-                    <i data-lucide="moon" class="btn-icon w-5 h-5"></i>
-                    <span class="btn-text" id="theme-text">Switch to Light Mode</span>
+                <button id="theme-toggle" class="glass-panel squircle nav-btn h-12 shadow-lg hover:shadow-2xl text-sm font-semibold">
+                    <div class="btn-content">
+                        <i data-lucide="moon" class="w-5 h-5"></i>
+                        <span id="theme-text">Switch to Light Mode</span>
+                    </div>
                 </button>
 
                 <!-- Music Toggle -->
-                <button id="music-toggle" class="glass-panel squircle nav-btn h-12 text-sm font-medium shadow-lg hover:shadow-xl">
-                    <i data-lucide="volume-2" class="btn-icon w-5 h-5"></i>
-                    <span class="btn-text" id="music-text">Turn Music Off</span>
+                <button id="music-toggle" class="glass-panel squircle nav-btn h-12 shadow-lg hover:shadow-2xl text-sm font-semibold">
+                    <div class="btn-content">
+                        <i data-lucide="volume-2" class="w-5 h-5"></i>
+                        <span id="music-text">Turn Music Off</span>
+                    </div>
                 </button>
 
-                <!-- Hamburger Menu -->
+                <!-- Hamburger Menu Container -->
                 <div id="menu-container" class="relative">
-                    <!-- The Trigger Button -->
-                    <button id="menu-btn" class="glass-panel squircle w-12 h-12 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 z-50 relative">
-                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    
+                    <!-- Trigger -->
+                    <button id="menu-btn" class="glass-panel squircle w-12 h-12 flex items-center justify-center shadow-lg hover:shadow-2xl transition-all duration-300 z-50 relative group">
+                        <i data-lucide="menu" class="w-6 h-6 transition-transform group-hover:scale-110"></i>
                     </button>
 
-                    <!-- The Expanded Menu Panel -->
-                    <!-- Added text color explicitly for visibility -->
-                    <div id="menu-panel" class="absolute top-0 right-0 glass-panel squircle shadow-2xl overflow-hidden transition-all duration-300 ease-out opacity-0 pointer-events-none w-12 h-12 flex flex-col items-start z-40 text-gray-900 dark:text-gray-100">
+                    <!-- Menu Panel -->
+                    <div id="menu-panel" class="absolute top-0 right-0 glass-panel squircle shadow-2xl overflow-hidden transition-all duration-500 ease-snappy opacity-0 pointer-events-none w-12 h-12 flex flex-col items-start z-40">
                         
-                        <!-- Close Button -->
+                        <!-- Close Icon -->
                         <button id="menu-close" class="absolute top-3 right-3 p-1 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition-colors hidden z-50">
                             <i data-lucide="x" class="w-5 h-5"></i>
                         </button>
 
-                        <div class="p-6 w-64 pt-16 opacity-0 transition-opacity duration-200 delay-100" id="menu-content">
-                            <h3 class="text-xs font-bold uppercase tracking-widest opacity-70 mb-4 border-b border-gray-400/30 pb-2">Menu</h3>
-                            <nav class="flex flex-col space-y-3">
-                                <a href="../index.html" class="hover:translate-x-1 transition-transform font-medium hover:text-blue-500 dark:hover:text-blue-400">Home</a>
-                                <a href="https://hongpenggg.github.io" class="hover:translate-x-1 transition-transform font-medium hover:text-blue-500 dark:hover:text-blue-400">Website</a>
-                                <a href="page4.html" class="hover:translate-x-1 transition-transform font-medium hover:text-blue-500 dark:hover:text-blue-400">Academic Wall</a>
-                                <a href="page100.html" class="hover:translate-x-1 transition-transform font-medium hover:text-blue-500 dark:hover:text-blue-400">Leave A Message</a>
+                        <!-- Links -->
+                        <div class="p-6 w-72 pt-16 opacity-0 transition-opacity duration-300 delay-75" id="menu-content">
+                            <h3 class="text-xs font-extrabold uppercase tracking-widest opacity-60 mb-5 border-b border-gray-500/30 pb-2">Navigation</h3>
+                            <nav class="flex flex-col space-y-4 font-sans font-medium text-lg text-gray-900 dark:text-gray-100">
+                                <a href="../index.html" class="flex items-center gap-3 hover:translate-x-2 transition-transform duration-300 hover:text-blue-600 dark:hover:text-blue-400">
+                                    <i data-lucide="home" class="w-4 h-4 opacity-70"></i> Home
+                                </a>
+                                <a href="https://hongpenggg.github.io" class="flex items-center gap-3 hover:translate-x-2 transition-transform duration-300 hover:text-blue-600 dark:hover:text-blue-400">
+                                    <i data-lucide="globe" class="w-4 h-4 opacity-70"></i> Website
+                                </a>
+                                <a href="page4.html" class="flex items-center gap-3 hover:translate-x-2 transition-transform duration-300 hover:text-blue-600 dark:hover:text-blue-400">
+                                    <i data-lucide="graduation-cap" class="w-4 h-4 opacity-70"></i> Academic Wall
+                                </a>
+                                <a href="page100.html" class="flex items-center gap-3 hover:translate-x-2 transition-transform duration-300 hover:text-blue-600 dark:hover:text-blue-400">
+                                    <i data-lucide="message-square" class="w-4 h-4 opacity-70"></i> Leave A Message
+                                </a>
                             </nav>
                         </div>
                     </div>
@@ -230,24 +270,24 @@
     </header>
 
     <!-- Main Content -->
-    <!-- Added flex-grow to push footer down if content is short -->
-    <main class="relative pt-40 px-6 pb-20 flex-grow w-full max-w-5xl mx-auto">
+    <!-- flex-grow pushes footer down -->
+    <main class="relative pt-44 px-4 md:px-8 pb-20 flex-grow w-full max-w-4xl mx-auto z-10">
         
-        <!-- Letter Container -->
-        <article class="w-full mx-auto glass-panel squircle p-8 md:p-12 shadow-2xl transition-all duration-500">
+        <!-- Letter Card -->
+        <article class="w-full mx-auto glass-panel squircle p-8 md:p-16 shadow-2xl transition-all duration-500 backdrop-blur-xl">
             
             <!-- Letter Header -->
-            <div class="mb-10 text-center border-b border-gray-400/20 pb-8">
-                <h2 class="font-sans font-bold text-sm uppercase tracking-[0.2em] opacity-70 mb-2">Part IV</h2>
-                <h1 class="font-serif text-3xl md:text-4xl font-bold leading-tight">Letter to the Admissions Officer</h1>
+            <div class="mb-12 text-center border-b border-gray-500/20 pb-10">
+                <h2 class="font-sans font-bold text-xs md:text-sm uppercase tracking-[0.3em] opacity-60 mb-3">Part IV</h2>
+                <h1 class="font-serif text-3xl md:text-5xl font-bold leading-tight tracking-tight text-current">Letter to the Admissions Officer</h1>
             </div>
 
             <!-- Letter Body -->
-            <div class="font-serif text-lg leading-relaxed space-y-6 opacity-90 text-justify">
+            <div class="font-serif text-lg md:text-xl leading-relaxed space-y-8 opacity-95 text-justify text-current">
                 <p>Dear AO,</p>
                 <p>I want to tell you a story. A story about bridges. Not the kind built with steel and cable, but the kind built with patience and hope.</p>
                 
-                <p>When I was four years old, I didn't speak English. My parents, immigrants to Singapore who had crossed oceans with nothing but stubborn hope, watched their firstborn child sit silent in a classroom where every word was a locked door. The language gap was more than just linguistic. It was existential. It was the difference between belonging and being invisible.</p>
+                <p>When I was five years old, I didn't speak English. My parents, immigrants to Singapore who had crossed oceans with nothing but stubborn hope, watched their firstborn child sit silent in a classroom where every word was a locked door. The language gap was more than just linguistic. It was existential. It was the difference between belonging and being invisible.</p>
                 
                 <p>It was my mother's relentless evening tutorials at our kitchen table, my teachers who stayed after school to explain concepts in broken Mandarin, and my classmates who slowed down their speech so I could catch up who saved me from staying silent forever. They built a bridge for me, word by painstaking word. By the time I was eight, I was speaking English. Thinking in it. Dreaming in it. Becoming myself in it...</p>
                 
@@ -261,7 +301,7 @@
                 
                 <p>So I taught myself. Ninth grade, tenth grade... Nights spent with free online tutorials, building clumsy websites, breaking code and fixing it again. With YouTube videos, codecademy tutorials and sheer grit, I learnt HTML, CSS and JS from scratch. I eventually joined the drones club, and taught myself how to program them to fly. But I shouldn't have had to fight that hard just for the chance to learn.</p>
                 
-                <p>So that is why I'm writing to you.</p>
+                <p>So, that is why I'm writing to you.</p>
                 
                 <p>After I graduate - whether from an elite university like yours or elsewhere - I'm starting a non-profit. Not the kind that looks good on a resume and then quietly dies after application season. The kind that I'll keep pushing through university, through my career, through my life. One that gives every Singaporean child who wants to learn coding that chance, regardless of their parents' bank account. One that creates after-school STEM programs in underserved communities. One that ensures no kid ever hears "you don't have enough experience" when all they lack is opportunity.</p>
                 
@@ -279,178 +319,189 @@
             </div>
 
             <!-- Sign Off -->
-            <div class="mt-16 font-serif">
-                <p class="mb-6 italic">With deep respect and unwavering determination,</p>
+            <div class="mt-16 font-serif border-t border-gray-500/20 pt-8">
+                <p class="mb-8 italic text-lg">With deep respect and unwavering determination,</p>
                 
-                <!-- Signature Image -->
-                <div class="my-6">
-                    <img src="../assets/images/signature.png" alt="Hongpeng's Signature" class="h-16 md:h-20 dark:invert filter transition-all opacity-90" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                    <!-- Fallback text if image fails -->
-                    <p style="display:none" class="font-cursive text-2xl">Hongpeng</p>
+                <!-- Signature Block -->
+                <div class="my-8">
+                    <img src="../assets/images/signature.png" alt="Hongpeng" class="h-20 md:h-24 dark:invert filter opacity-90 transition-opacity hover:opacity-100" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                    <!-- Graceful Fallback -->
+                    <p style="display:none" class="font-cursive text-3xl font-bold">Hongpeng</p>
                 </div>
                 
-                <p class="text-sm font-sans tracking-wider opacity-60">01-01-2026</p>
+                <p class="text-sm font-sans tracking-widest opacity-60 uppercase">01-01-2026</p>
             </div>
 
         </article>
     </main>
 
-    <!-- Footer - Removed fixed, now flows naturally -->
-    <footer class="w-full glass-panel py-6 text-center z-40 backdrop-blur-xl border-t border-white/10 mt-auto">
-        <p class="font-sans text-xs md:text-sm opacity-60">&copy; 2025 Hongpeng's Playground. All rights reserved.</p>
+    <!-- Footer: Static at bottom of flow -->
+    <footer class="w-full glass-panel py-8 text-center z-40 mt-auto border-t border-white/10 relative">
+        <div class="max-w-4xl mx-auto px-4">
+            <p class="font-sans text-xs md:text-sm opacity-60 mb-2">&copy; 2025 Hongpeng's Playground. All rights reserved.</p>
+            <p class="font-sans text-[10px] md:text-xs opacity-40 leading-relaxed">
+                The music on this site is: Beethovan's Moonlight Sonata; Chopin's Nocturne; Dmitri Shostakovich's Waltz; Johannes Brahms' Hungarian Dance; Mozart's Lacrimosa; Beethoven's Ode an die Freude; and Mozart's Rondo Alla Turca
+            </p>
+        </div>
     </footer>
 
-    <!-- Scripts -->
+    <!-- Logic -->
     <script>
-        // Initialize Icons
+        // 1. Initialize Lucide Icons
         lucide.createIcons();
 
-        // --- Elements ---
-        const body = document.body;
+        // 2. Element Refs
+        const body = document.querySelector('body');
         const themeBtn = document.getElementById('theme-toggle');
         const themeText = document.getElementById('theme-text');
         const musicBtn = document.getElementById('music-toggle');
         const musicText = document.getElementById('music-text');
         const audio = document.getElementById('bg-audio');
-        const header = document.getElementById('main-header');
         const headerContainer = document.getElementById('header-container');
         
-        // Menu Elements
+        // Menu Refs
         const menuContainer = document.getElementById('menu-container');
         const menuBtn = document.getElementById('menu-btn');
         const menuPanel = document.getElementById('menu-panel');
         const menuContent = document.getElementById('menu-content');
         const menuClose = document.getElementById('menu-close');
 
-        // --- State ---
-        let isDark = true; 
-        let isMusicPlaying = true;
-        let isMenuLocked = false;
+        // 3. State Management
+        let state = {
+            dark: true,
+            playing: true,
+            menuLocked: false
+        };
 
-        // --- Theme Logic ---
-        function updateThemeUI() {
-            const moonIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon w-5 h-5"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
-            const sunIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon w-5 h-5"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>';
+        // 4. Fade In to prevent FOUC
+        window.onload = () => {
+            body.classList.remove('opacity-0');
+            // Attempt autoplay
+            if(state.playing) {
+                const playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(() => {
+                        console.log("Autoplay blocked. Waiting for interaction.");
+                        // Fallback: Play on first click
+                        document.addEventListener('click', () => {
+                            if(state.playing && audio.paused) audio.play();
+                        }, { once: true });
+                    });
+                }
+            }
+            renderTheme();
+        };
 
-            if (isDark) {
+        // 5. Theme Logic
+        function renderTheme() {
+            if (state.dark) {
                 body.classList.add('dark');
-                themeBtn.querySelector('.btn-icon').outerHTML = moonIcon;
-                themeText.textContent = "Switch to Light Mode";
+                themeText.innerText = "Switch to Light Mode";
+                // Swap Icon to Sun
+                themeBtn.querySelector('i').setAttribute('data-lucide', 'sun');
             } else {
                 body.classList.remove('dark');
-                themeBtn.querySelector('.btn-icon').outerHTML = sunIcon;
-                themeText.textContent = "Switch to Dark Mode";
+                themeText.innerText = "Switch to Dark Mode";
+                // Swap Icon to Moon
+                themeBtn.querySelector('i').setAttribute('data-lucide', 'moon');
             }
+            lucide.createIcons(); // Refresh icons
         }
 
         themeBtn.addEventListener('click', () => {
-            isDark = !isDark;
-            updateThemeUI();
+            state.dark = !state.dark;
+            renderTheme();
         });
 
-        // --- Audio Logic ---
-        function updateMusicUI() {
-            const volHigh = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon w-5 h-5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>';
-            const volMute = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon w-5 h-5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" x2="17" y1="9" y2="15"/><line x1="17" x2="23" y1="9" y2="15"/></svg>';
-
-            if (isMusicPlaying) {
-                audio.play().catch(e => console.log("Autoplay prevented until interaction"));
-                musicBtn.querySelector('.btn-icon').outerHTML = volHigh;
-                musicText.textContent = "Turn Music Off";
+        // 6. Audio Logic
+        function renderMusic() {
+            if (state.playing) {
+                audio.play();
+                musicText.innerText = "Turn Music Off";
+                musicBtn.querySelector('i').setAttribute('data-lucide', 'volume-2');
             } else {
                 audio.pause();
-                musicBtn.querySelector('.btn-icon').outerHTML = volMute;
-                musicText.textContent = "Turn Music On";
+                musicText.innerText = "Turn Music On";
+                musicBtn.querySelector('i').setAttribute('data-lucide', 'volume-x');
             }
+            lucide.createIcons();
         }
 
         musicBtn.addEventListener('click', () => {
-            isMusicPlaying = !isMusicPlaying;
-            updateMusicUI();
+            state.playing = !state.playing;
+            renderMusic();
         });
 
-        document.body.addEventListener('click', function() {
-            if(isMusicPlaying && audio.paused) {
-                audio.play();
-            }
-        }, { once: true });
-
-
-        // --- Menu Logic ---
-        
+        // 7. Complex Menu Logic
         function openMenu() {
-            menuPanel.style.width = '280px';
+            menuPanel.style.width = '300px';
             menuPanel.style.height = 'auto';
-            menuPanel.style.minHeight = '300px';
+            menuPanel.style.minHeight = '320px';
             menuPanel.style.opacity = '1';
             menuPanel.style.pointerEvents = 'auto';
-            menuContainer.classList.add('menu-open');
-            menuBtn.style.opacity = '0';
             
-            // Explicitly show content opacity
             menuContent.style.opacity = '1';
+            menuBtn.style.opacity = '0'; // Hide hamburger
             
-            if (isMenuLocked) {
-                menuClose.style.display = 'block';
-            }
+            if (state.menuLocked) menuClose.style.display = 'block';
         }
 
         function closeMenu() {
-            if (isMenuLocked) return; 
+            if (state.menuLocked) return;
             
-            menuPanel.style.width = '3rem'; 
-            menuPanel.style.height = '3rem'; 
+            // Retract
+            menuPanel.style.width = '3rem'; // w-12
+            menuPanel.style.height = '3rem'; // h-12
             menuPanel.style.minHeight = '0';
             menuPanel.style.opacity = '0';
             menuPanel.style.pointerEvents = 'none';
-            menuContainer.classList.remove('menu-open');
-            menuBtn.style.opacity = '1';
             
-            // Hide content explicitly
             menuContent.style.opacity = '0';
-            
+            menuBtn.style.opacity = '1'; // Show hamburger
             menuClose.style.display = 'none';
         }
 
+        // Hover Interactions
         menuBtn.addEventListener('mouseenter', openMenu);
         menuPanel.addEventListener('mouseenter', openMenu);
-        
         menuContainer.addEventListener('mouseleave', () => {
-            if (!isMenuLocked) closeMenu();
+            if (!state.menuLocked) closeMenu();
         });
 
+        // Click Interactions (Locking)
         menuBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            isMenuLocked = true;
+            state.menuLocked = true;
             openMenu();
         });
 
         menuClose.addEventListener('click', (e) => {
             e.stopPropagation();
-            isMenuLocked = false;
+            state.menuLocked = false;
             closeMenu();
         });
 
+        // Click outside to close
         document.addEventListener('click', (e) => {
-            if (isMenuLocked && !menuContainer.contains(e.target)) {
-                isMenuLocked = false;
+            if (state.menuLocked && !menuContainer.contains(e.target)) {
+                state.menuLocked = false;
                 closeMenu();
             }
         });
 
-        // --- Scroll Effect ---
+        // 8. Scroll Effects (Frosted Header)
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                headerContainer.classList.add('glass-panel');
-                headerContainer.classList.add('shadow-lg');
+            if (window.scrollY > 20) {
+                headerContainer.classList.add('glass-panel', 'shadow-xl');
+                headerContainer.classList.replace('p-2', 'py-3');
+                headerContainer.classList.add('px-6');
             } else {
-                headerContainer.classList.remove('glass-panel');
-                headerContainer.classList.remove('shadow-lg');
+                headerContainer.classList.remove('glass-panel', 'shadow-xl');
+                headerContainer.classList.replace('py-3', 'p-2');
+                headerContainer.classList.remove('px-6');
             }
         });
 
-        updateThemeUI();
-        
     </script>
 </body>
 </html>
