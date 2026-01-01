@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark opacity-0 transition-opacity duration-700">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,7 +25,6 @@
                         serif: ['Merriweather', 'serif'],
                     },
                     colors: {
-                        // Custom glass colors for better visibility
                         glass: {
                             light: 'rgba(255, 255, 255, 0.7)',
                             dark: 'rgba(20, 20, 20, 0.6)',
@@ -186,8 +185,7 @@
     </style>
 </head>
 
-<!-- Body Opacity 0 initially to prevent FOUC, fades in via JS -->
-<body class="antialiased opacity-0 onload-fade-in">
+<body class="antialiased">
 
     <!-- Audio Player -->
     <audio id="bg-audio" loop preload="auto">
@@ -373,10 +371,8 @@
             menuLocked: false
         };
 
-        // 4. Fade In to prevent FOUC
+        // 4. Initial Load (Autoplay attempt)
         window.onload = () => {
-            body.classList.remove('opacity-0');
-            // Attempt autoplay
             if(state.playing) {
                 const playPromise = audio.play();
                 if (playPromise !== undefined) {
