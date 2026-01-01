@@ -8,12 +8,12 @@
     <!-- Fonts: Inter for UI, Merriweather for Reading -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Tailwind Config for specific colors/fonts -->
+    <!-- Tailwind Config -->
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -27,12 +27,7 @@
                         glass: {
                             light: 'rgba(255, 255, 255, 0.1)',
                             dark: 'rgba(0, 0, 0, 0.3)',
-                            border: 'rgba(255, 255, 255, 0.1)',
                         }
-                    },
-                    transitionProperty: {
-                        'width': 'width',
-                        'spacing': 'margin, padding',
                     }
                 }
             }
@@ -43,14 +38,16 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        /* Custom CSS for specific animations and glassmorphism */
+        /* --- Background & Layout --- */
         body {
             transition: background-image 0.5s ease-in-out;
             background-size: cover;
             background-position: center;
-            background-attachment: fixed;
+            background-attachment: fixed; /* KEEPS IMAGE STATIC */
             background-repeat: no-repeat;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Default Dark Mode Background */
@@ -65,7 +62,7 @@
             color: #1a202c;
         }
 
-        /* Frosted Glass Utilities */
+        /* --- Glassmorphism --- */
         .glass-panel {
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
@@ -82,35 +79,24 @@
             border-color: rgba(255, 255, 255, 0.3);
         }
 
-        /* Button Squircle Shape */
-        .squircle {
-            border-radius: 18px; 
-        }
+        .squircle { border-radius: 18px; }
 
-        /* Hide Scrollbar for cleaner look */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(156, 163, 175, 0.5);
-            border-radius: 4px;
-        }
-
-        /* Text selection color */
-        ::selection {
-            background: rgba(147, 197, 253, 0.3);
-        }
+        /* --- Scrollbar --- */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 4px; }
+        ::selection { background: rgba(147, 197, 253, 0.3); }
         
-        /* Expansion Animations */
+        /* --- Animations --- */
+        /* Logo Expansion */
         .expand-text {
             max-width: 0;
             opacity: 0;
             overflow: hidden;
             white-space: nowrap;
             transition: max-width 0.4s ease, opacity 0.3s ease;
+            display: inline-block;
+            vertical-align: bottom; /* Aligns font baselines */
         }
         
         .group:hover .expand-text {
@@ -118,40 +104,19 @@
             opacity: 1;
         }
 
-        /* Logo Slash Rotation */
         .slash {
             transition: transform 0.4s ease;
             display: inline-block;
         }
         
-        /* H \ W -> H / W */
-        /* Assuming starting state is backslash visually or just generic slash. 
-           Request says: "slash changes orientation". 
-           Let's rotate it. */
         .group:hover .slash {
-            transform: rotate(20deg) scale(1.1); /* Subtle rotation */
-        }
-        
-        /* Main Container Readability */
-        .letter-container {
-            transition: background-color 0.3s ease;
+            transform: rotate(20deg) scale(1.1);
         }
 
-        .menu-items {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .menu-open .menu-items {
-            display: flex;
-            opacity: 1;
-        }
-
-        /* Button Expansion Logic */
+        /* Button Expansion */
         .nav-btn {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 48px; /* Initial width for icon */
+            width: 48px;
             overflow: hidden;
             display: flex;
             align-items: center;
@@ -188,10 +153,9 @@
             width: 0;
             display: none;
         }
-
     </style>
 </head>
-<body class="antialiased overflow-x-hidden pb-24"> <!-- pb-24 for fixed footer -->
+<body class="antialiased overflow-x-hidden">
 
     <!-- Audio Player -->
     <audio id="bg-audio" loop autoplay>
@@ -203,19 +167,20 @@
         <div id="header-container" class="max-w-7xl mx-auto flex justify-between items-start transition-all duration-300 rounded-3xl p-2">
             
             <!-- Logo Top Left -->
+            <!-- Added font-bold to parent to ensure consistent weight -->
             <div class="group flex items-center font-sans font-bold text-2xl cursor-default select-none pt-2 pl-2">
                 <!-- H -->
-                <span class="relative z-10 transition-transform duration-300">H</span>
-                <!-- ongpeng (Hidden by default) -->
-                <span class="expand-text font-normal text-xl ml-0.5">ongpeng</span>
+                <span class="relative z-10">H</span>
+                <!-- ongpeng -->
+                <span class="expand-text font-bold text-2xl ml-[1px]">ongpeng</span>
                 
                 <!-- Slash -->
                 <span class="mx-1 text-gray-400 slash group-hover:text-current font-light">\</span>
                 
                 <!-- W -->
                 <span class="relative z-10">W</span>
-                <!-- ei (Hidden by default) -->
-                <span class="expand-text font-normal text-xl ml-0.5">ei</span>
+                <!-- ei -->
+                <span class="expand-text font-bold text-2xl ml-[1px]">ei</span>
             </div>
 
             <!-- Top Right Buttons -->
@@ -241,20 +206,21 @@
                     </button>
 
                     <!-- The Expanded Menu Panel -->
-                    <div id="menu-panel" class="absolute top-0 right-0 glass-panel squircle shadow-2xl overflow-hidden transition-all duration-300 ease-out opacity-0 pointer-events-none w-12 h-12 flex flex-col items-start z-40">
+                    <!-- Added text color explicitly for visibility -->
+                    <div id="menu-panel" class="absolute top-0 right-0 glass-panel squircle shadow-2xl overflow-hidden transition-all duration-300 ease-out opacity-0 pointer-events-none w-12 h-12 flex flex-col items-start z-40 text-gray-900 dark:text-gray-100">
                         
-                        <!-- Close Button (Only visible when locked) -->
-                        <button id="menu-close" class="absolute top-3 right-3 p-1 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition-colors hidden">
+                        <!-- Close Button -->
+                        <button id="menu-close" class="absolute top-3 right-3 p-1 rounded-full hover:bg-black/10 dark:hover:bg-white/10 transition-colors hidden z-50">
                             <i data-lucide="x" class="w-5 h-5"></i>
                         </button>
 
                         <div class="p-6 w-64 pt-16 opacity-0 transition-opacity duration-200 delay-100" id="menu-content">
                             <h3 class="text-xs font-bold uppercase tracking-widest opacity-70 mb-4 border-b border-gray-400/30 pb-2">Menu</h3>
                             <nav class="flex flex-col space-y-3">
-                                <a href="../index.html" class="hover:translate-x-1 transition-transform font-medium">Home</a>
-                                <a href="https://hongpenggg.github.io" class="hover:translate-x-1 transition-transform font-medium">Website</a>
-                                <a href="page4.html" class="hover:translate-x-1 transition-transform font-medium">Academic Wall</a>
-                                <a href="page100.html" class="hover:translate-x-1 transition-transform font-medium">Leave A Message</a>
+                                <a href="../index.html" class="hover:translate-x-1 transition-transform font-medium hover:text-blue-500 dark:hover:text-blue-400">Home</a>
+                                <a href="https://hongpenggg.github.io" class="hover:translate-x-1 transition-transform font-medium hover:text-blue-500 dark:hover:text-blue-400">Website</a>
+                                <a href="page4.html" class="hover:translate-x-1 transition-transform font-medium hover:text-blue-500 dark:hover:text-blue-400">Academic Wall</a>
+                                <a href="page100.html" class="hover:translate-x-1 transition-transform font-medium hover:text-blue-500 dark:hover:text-blue-400">Leave A Message</a>
                             </nav>
                         </div>
                     </div>
@@ -264,10 +230,11 @@
     </header>
 
     <!-- Main Content -->
-    <main class="relative pt-40 px-6 min-h-screen pb-20">
+    <!-- Added flex-grow to push footer down if content is short -->
+    <main class="relative pt-40 px-6 pb-20 flex-grow w-full max-w-5xl mx-auto">
         
         <!-- Letter Container -->
-        <article class="max-w-2xl mx-auto glass-panel squircle p-8 md:p-12 shadow-2xl transition-all duration-500">
+        <article class="w-full mx-auto glass-panel squircle p-8 md:p-12 shadow-2xl transition-all duration-500">
             
             <!-- Letter Header -->
             <div class="mb-10 text-center border-b border-gray-400/20 pb-8">
@@ -328,8 +295,8 @@
         </article>
     </main>
 
-    <!-- Fixed Footer -->
-    <footer class="fixed bottom-0 w-full glass-panel py-4 text-center z-40 backdrop-blur-xl border-t border-white/10">
+    <!-- Footer - Removed fixed, now flows naturally -->
+    <footer class="w-full glass-panel py-6 text-center z-40 backdrop-blur-xl border-t border-white/10 mt-auto">
         <p class="font-sans text-xs md:text-sm opacity-60">&copy; 2025 Hongpeng's Playground. All rights reserved.</p>
     </footer>
 
@@ -356,8 +323,8 @@
         const menuClose = document.getElementById('menu-close');
 
         // --- State ---
-        let isDark = true; // Default as per prompt
-        let isMusicPlaying = true; // Default as per prompt
+        let isDark = true; 
+        let isMusicPlaying = true;
         let isMenuLocked = false;
 
         // --- Theme Logic ---
@@ -402,7 +369,6 @@
             updateMusicUI();
         });
 
-        // Auto-play workaround: If browser blocks autoplay, play on first click anywhere
         document.body.addEventListener('click', function() {
             if(isMusicPlaying && audio.paused) {
                 audio.play();
@@ -412,7 +378,6 @@
 
         // --- Menu Logic ---
         
-        // Function to Open Menu
         function openMenu() {
             menuPanel.style.width = '280px';
             menuPanel.style.height = 'auto';
@@ -420,30 +385,33 @@
             menuPanel.style.opacity = '1';
             menuPanel.style.pointerEvents = 'auto';
             menuContainer.classList.add('menu-open');
-            // Hide the hamburger icon visually (optional, or keep it)
             menuBtn.style.opacity = '0';
             
-            // Show close button if locked
+            // Explicitly show content opacity
+            menuContent.style.opacity = '1';
+            
             if (isMenuLocked) {
                 menuClose.style.display = 'block';
             }
         }
 
-        // Function to Close Menu
         function closeMenu() {
-            if (isMenuLocked) return; // Don't close on hover-out if locked
+            if (isMenuLocked) return; 
             
-            menuPanel.style.width = '3rem'; // w-12
-            menuPanel.style.height = '3rem'; // h-12
+            menuPanel.style.width = '3rem'; 
+            menuPanel.style.height = '3rem'; 
             menuPanel.style.minHeight = '0';
             menuPanel.style.opacity = '0';
             menuPanel.style.pointerEvents = 'none';
             menuContainer.classList.remove('menu-open');
             menuBtn.style.opacity = '1';
+            
+            // Hide content explicitly
+            menuContent.style.opacity = '0';
+            
             menuClose.style.display = 'none';
         }
 
-        // Hover Events
         menuBtn.addEventListener('mouseenter', openMenu);
         menuPanel.addEventListener('mouseenter', openMenu);
         
@@ -451,21 +419,18 @@
             if (!isMenuLocked) closeMenu();
         });
 
-        // Click to Lock
         menuBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             isMenuLocked = true;
             openMenu();
         });
 
-        // Close Button
         menuClose.addEventListener('click', (e) => {
             e.stopPropagation();
             isMenuLocked = false;
             closeMenu();
         });
 
-        // Close if clicking outside
         document.addEventListener('click', (e) => {
             if (isMenuLocked && !menuContainer.contains(e.target)) {
                 isMenuLocked = false;
@@ -473,21 +438,17 @@
             }
         });
 
-
         // --- Scroll Effect ---
         window.addEventListener('scroll', () => {
             if (window.scrollY > 50) {
-                // Apply frosted glass to the container
                 headerContainer.classList.add('glass-panel');
                 headerContainer.classList.add('shadow-lg');
-                // Ensure text flows under
             } else {
                 headerContainer.classList.remove('glass-panel');
                 headerContainer.classList.remove('shadow-lg');
             }
         });
 
-        // Initialize
         updateThemeUI();
         
     </script>
