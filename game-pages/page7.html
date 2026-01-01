@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hongpeng's Letter</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS v2.2.19 (Production CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* --- CSS Variables for Theming --- */
+        :root {
+            /* Light Mode Variables */
+            --bg-image: url('../assets/images/mountain_day.png');
+            --text-main: #1a202c;
+            --text-muted: #4a5568;
+            
+            /* Enhanced Glass Effect for Light Mode */
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.6);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            --glass-footer: rgba(255, 255, 255, 0.85);
+            
+            --menu-hover: rgba(0, 0, 0, 0.05);
+            --invert-filter: 0;
+        }
+
+        body.dark {
+            /* Dark Mode Variables */
+            --bg-image: url('../assets/images/mountain_night.png');
+            --text-main: #f7fafc;
+            --text-muted: #cbd5e0;
+            
+            /* Enhanced Glass Effect for Dark Mode */
+            --glass-bg: rgba(0, 0, 0, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            --glass-footer: rgba(0, 0, 0, 0.75);
+            
+            --menu-hover: rgba(255, 255, 255, 0.15);
+            --invert-filter: 1;
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-image: var(--bg-image);
+            color: var(--text-main);
+            transition: background-image 0.5s ease-in-out, color 0.3s ease;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Parallax-like fixed background */
+            
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Typography overrides */
+        .font-serif { font-family: 'Merriweather', serif; }
+        .font-sans { font-family: 'Inter', sans-serif; }
+
+        /* --- Frosted Glass Utilities --- */
+        .glass-panel {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: all 0.3s ease;
+        }
+
+        .glass-footer {
+            background: var(--glass-footer);
+            border-top: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .squircle { border-radius: 20px; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.5);
+            border-radius: 4px;
+        }
+
+        /* --- Animations --- */
+        .expand-text {
+            max-width: 0;
+            opacity: 0;
+            overflow: hidden;
+            white-space: nowrap;
+            display: inline-block;
+            vertical-align: bottom;
+            transition: max-width 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
+        }
+        
+        .group:hover .expand-text {
+            max-width: 200px;
+            opacity: 1;
+        }
+
+        .slash {
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: inline-block;
+        }
+        
+        .group:hover .slash {
+            transform: rotate(20deg) scale(1.2);
+            color: inherit;
+        }
+
+        /* --- Navigation Buttons --- */
+        .nav-btn {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 48px; 
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .nav-btn:hover {
+            width: auto; 
+            padding-left: 1.25rem;
+            padding-right: 1.25rem;
+        }
+
+        .btn-text {
+            position: absolute;
+            opacity: 0;
+            transform: translateX(10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .nav-btn:hover .btn-text {
+            position: static;
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .nav-btn .btn-icon {
+            transition: opacity 0.2s ease, width 0.2s ease;
+        }
+
+        .nav-btn:hover .btn-icon {
+            opacity: 0;
+            width: 0;
+            display: none;
+        }
+
+        /* --- Menu Specific Logic --- */
+        /* The container determines the width of the menu area in the flex row */
+        #menu-container {
+            width: 3rem; /* w-12 equivalent */
+            transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* When open, it expands, pushing left siblings */
+        #menu-container.menu-open,
+        #menu-container:hover {
+            width: 16rem; /* Expanded width */
+        }
+
+        /* The panel sits inside the container */
+        #menu-panel {
+            width: 100%;
+            height: 3rem; /* Starts as button height */
+            min-height: 3rem;
+            overflow: hidden;
+            transition: height 0.5s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.3s ease;
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 60;
+        }
+
+        /* Expand height on hover/open */
+        #menu-container:hover #menu-panel,
+        #menu-container.menu-open #menu-panel {
+            height: auto;
+            min-height: 320px;
+        }
+
+        #menu-content {
+            opacity: 0;
+            transition: opacity 0.3s ease 0.1s;
+            pointer-events: none;
+        }
+
+        #menu-container:hover #menu-content,
+        #menu-container.menu-open #menu-content {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .menu-link {
+            color: var(--text-main);
+            display: block;
+            padding: 0.75rem 1rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-radius: 0.5rem;
+        }
+
+        .menu-link:hover {
+            color: var(--text-main);
+            background: var(--menu-hover);
+            transform: translateX(4px);
+        }
+
+        /* --- Snow Canvas --- */
+        #snow-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Let clicks pass through */
+            z-index: 1; /* Behind header (50), above background */
+        }
+
+        /* --- Utilities --- */
+        .text-xxs { font-size: 10px; }
+        .tracking-widest-xl { letter-spacing: 0.2em; }
+        
+        #main-header { z-index: 50; }
+    </style>
+</head>
+<body class="antialiased dark"> 
+    
+    <!-- Audio Source -->
+    <audio id="bg-audio" loop autoplay>
+        <source src="../assets/audio/bg.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Snow Canvas -->
+    <canvas id="snow-canvas"></canvas>
+
+    <!-- Header -->
+    <header id="main-header" class="fixed top-0 left-0 w-full transition-all duration-300 py-4 px-4 md:px-12">
+        <div id="header-container" class="max-w-7xl mx-auto flex justify-between items-start transition-all duration-300 rounded-3xl p-2 relative z-50">
+            
+            <!-- Logo Section -->
+            <div class="group flex items-center font-sans font-bold text-2xl cursor-default select-none pt-2 pl-2 text-current h-12">
+                <span class="relative z-10">H</span>
+                <span class="expand-text ml-px">ongpeng</span>
+                <span class="mx-1 text-gray-400 slash font-light">\</span>
+                <span class="relative z-10">W</span>
+                <span class="expand-text ml-px">ei</span>
+            </div>
+
+            <!-- Navigation Buttons Container -->
+            <!-- Flex container aligned right. Growing the last item (menu) pushes others left. -->
+            <div class="flex items-start gap-3 relative justify-end" id="nav-buttons-container">
+                
+                <!-- Theme Toggle -->
+                <button id="theme-toggle" class="glass-panel squircle nav-btn h-12 text-sm font-medium shadow-lg hover:shadow-xl focus:outline-none z-20">
+                    <i data-lucide="sun" class="btn-icon w-5 h-5"></i>
+                    <span class="btn-text" id="theme-text">Switch to Light Mode</span>
+                </button>
+
+                <!-- Music Toggle -->
+                <button id="music-toggle" class="glass-panel squircle nav-btn h-12 text-sm font-medium shadow-lg hover:shadow-xl focus:outline-none z-20">
+                    <i data-lucide="volume-2" class="btn-icon w-5 h-5"></i>
+                    <span class="btn-text" id="music-text">Turn Music Off</span>
+                </button>
+
+                <!-- Hamburger Menu Container (Resizable Wrapper) -->
+                <div id="menu-container" class="relative z-30 h-12">
+                    
+                    <!-- Expanding Panel (Absolute inside relative container) -->
+                    <div id="menu-panel" class="glass-panel squircle shadow-2xl flex flex-col items-start">
+                        
+                        <!-- Visible Trigger Icon (Menu) - Fades out on hover -->
+                        <div id="menu-trigger-icon" class="absolute top-0 right-0 w-12 h-12 flex items-center justify-center transition-opacity duration-300 pointer-events-none">
+                            <i data-lucide="menu" class="w-6 h-6"></i>
+                        </div>
+
+                        <!-- Close Button (Only for click-lock mode) -->
+                        <button id="menu-close" class="absolute top-3 right-3 p-1 rounded-full hover:bg-gray-500 hover:bg-opacity-20 transition-colors hidden focus:outline-none z-50">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
+
+                        <!-- Links Content -->
+                        <div class="p-6 w-full pt-16 flex flex-col h-full" id="menu-content">
+                            <h3 class="text-xs font-bold uppercase tracking-widest opacity-70 mb-4 border-b border-gray-400 pb-2 border-opacity-30">Menu</h3>
+                            <nav class="flex flex-col space-y-2">
+                                <a href="../index.html" class="menu-link">Home</a>
+                                <a href="https://hongpenggg.github.io" class="menu-link">Website</a>
+                                <a href="page4.html" class="menu-link">Academic Wall</a>
+                                <a href="https://beacons.ai/hongpeng" class="menu-link">Leave A Message</a>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="relative pt-40 px-6 pb-20 flex-grow w-full z-10">
+        <article class="max-w-2xl mx-auto glass-panel squircle p-8 md:p-12 shadow-2xl transition-all duration-500">
+            
+            <div class="mb-10 text-center border-b border-gray-400 pb-8 border-opacity-20">
+                <h2 class="font-sans font-bold text-sm uppercase tracking-widest-xl opacity-70 mb-2">Part IV</h2>
+                <h1 class="font-serif text-3xl md:text-4xl font-bold leading-tight">Letter to the Admissions Officer</h1>
+            </div>
+
+            <div class="font-serif text-lg leading-relaxed space-y-6 opacity-90 text-justify">
+                <p>Dear AO,</p>
+                <p>I want to tell you a story. A story about bridges. Not the kind built with steel and cable, but the kind built with patience and hope.</p>
+                
+                <p>When I was five years old, I didn't speak English. My parents, immigrants to Singapore who had crossed oceans with nothing but stubborn hope, watched their firstborn child sit silent in a classroom where every word was a locked door. The language gap was more than just linguistic. It was existential. It was the difference between belonging and being invisible.</p>
+                
+                <p>It was my mother's relentless evening tutorials at our kitchen table, my teachers who stayed after school to explain concepts in broken Mandarin, and my classmates who slowed down their speech so I could catch up who saved me from staying silent forever. They built a bridge for me, word by painstaking word. By the time I was eight, I was speaking English. Thinking in it. Dreaming in it. Becoming myself in it...</p>
+                
+                <p>I've never forgotten what it feels like to stand on the wrong side of that gap. And I carry that debt with me. Always.</p>
+                
+                <p>In secondary school, I found soccer. Or rather, soccer found me. People think it’s just a game, but for me, it isn't. Because on that field, I discovered the best versions of myself: the teammate who passes when ego screams "shoot," the innovator who sees patterns in tactics that others miss, the worker who stays late for one more shot. Soccer taught me that passion is something you build through countless small acts of showing up.</p>
+                
+                <p>But, how many kids never get that chance? How many lower-income children, whose parents work double shifts just to keep food on the table, never discover their "soccer"? That activity that reveals who they could become? How many brilliant minds are locked away simply because opportunity knocked on the wrong door?</p>
+                
+                <p>And I learnt this lesson the hard way. When I wanted to join my secondary school's coding club, I was rejected. Not because I lacked passion or potential, but because I lacked experience. In Singapore, experience has a price tag - the kind my middle-class parents couldn't afford. Singapore's community clubs (affordable enrichment) barely offered coding programs, and private enrichment centres were more than ready to charge hundreds a session. The irony was bitter: the very club meant to teach coding, was closed to the kids who hadn't already paid to learn. Perhaps - just perhaps - the digital divide isn't just about access to computers, it's also about access to learning itself, which, more often than not, is locked behind a paywall some kids simply cannot afford to open.</p>
+                
+                <p>So I taught myself. Ninth grade, tenth grade... Nights spent with free online tutorials, building clumsy websites, breaking code and fixing it again. With YouTube videos, codecademy tutorials and sheer grit, I learnt HTML, CSS and JS from scratch. I eventually joined the drones club, and taught myself how to program them to fly. But I shouldn't have had to fight that hard just for the chance to learn.</p>
+                
+                <p>So that is why I'm writing to you.</p>
+                
+                <p>After I graduate - whether from an elite university like yours or elsewhere - I'm starting a non-profit. Not the kind that looks good on a resume and then quietly dies after application season. The kind that I'll keep pushing through university, through my career, through my life. One that gives every Singaporean child who wants to learn coding that chance, regardless of their parents' bank account. One that creates after-school STEM programs in underserved communities. One that ensures no kid ever hears "you don't have enough experience" when all they lack is opportunity.</p>
+                
+                <p>Because I believe in giving back. Not as a transaction ("I'll volunteer so you'll admit me"), but as a covenant. As the firm belief that every child deserves the bridges that were built for me. Every child deserves their soccer, that thing that shows them who they could become. Not just my future children, but every child.</p>
+                
+                <p>I'm not asking you to admit me because I plan to do good. I'm telling you that I will do good, regardless. But imagine what I could do with your labs and your resources, your network and your professors, your clubs and your societies, and your commitment to service, behind me. Imagine what we could build together.</p>
+                
+                <p>You've read hundreds of applications. I'm sure many of them are from students who are smarter, more accomplished, more "pointy" than I am. But I promise you this: no one will fight harder to make sure the next generation has it better than we did. No one will care more deeply about turning privilege into purpose, opportunity into equity, potential into reality. Because I have walked through that rain, felt its cold shivers down my spine, and now I want to hold an umbrella up for other kids who are still walking through it.</p>
+                
+                <p>I'm asking to join a community that believes - as I do - that education is the great equalizer, and that we who have received much have an obligation to give more. That scientific advancement without equitable access is incomplete. That our most brilliant discoveries mean less if they remain accessible only to the already privileged.</p>
+                
+                <p>So, thank you for taking the time to see me not as an application number, but as a human being with a mission. Whatever you decide, I hope you know that you do important work: you hold futures in your hands. That's no small thing.</p>
+                
+                <p>Anyway, please do one small thing for me: Take care of yourself. This season is a grind for you too. Drink some water, take a walk, and please - always remember to smile. The world needs more people who still believe that every child deserves a chance to reach for the stars.</p>
+            </div>
+
+            <div class="mt-16 font-serif">
+                <p class="mb-6 italic">With deep respect and unwavering determination,</p>
+                
+                <div class="my-6">
+                    <img src="../assets/images/signature.png" alt="Hongpeng's Signature" class="h-16 md:h-20 filter transition-all opacity-90" style="filter: invert(var(--invert-filter, 1));" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                    <p style="display:none" class="font-cursive text-2xl">Hongpeng</p>
+                </div>
+                
+                <p class="text-sm font-sans tracking-wider opacity-60">01-01-2026</p>
+            </div>
+
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full glass-footer py-6 text-center z-40 mt-auto relative">
+        <div class="max-w-4xl mx-auto px-6">
+            <p class="font-sans text-xs md:text-sm opacity-60 mb-3">&copy; 2025 Hongpeng's Playground. All rights reserved.</p>
+            <p class="font-sans text-xxs md:text-xs opacity-40 leading-relaxed max-w-2xl mx-auto">
+                The music on this site is: Beethoven's Moonlight Sonata; Chopin's Nocturne; Dmitri Shostakovich's Waltz; Johannes Brahms' Hungarian Dance; Mozart's Lacrimosa; Beethoven's Ode an die Freude; and Mozart's Rondo Alla Turca
+            </p>
+        </div>
+    </footer>
+
+    <!-- Snow Toggle Fixed Button -->
+    <button id="snow-toggle" class="fixed bottom-6 right-6 glass-panel squircle w-12 h-12 flex items-center justify-center shadow-2xl hover:scale-105 transition-transform z-50 focus:outline-none" title="Toggle Snow">
+        <div class="relative w-6 h-6 flex items-center justify-center">
+            <i data-lucide="snowflake" class="w-6 h-6 absolute"></i>
+            <!-- Line through for 'Stop Snow' state (default) -->
+            <i data-lucide="slash" class="w-6 h-6 absolute text-red-400 opacity-80" id="snow-slash"></i>
+        </div>
+    </button>
+
+    <!-- Scripts -->
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // --- Elements ---
+        const body = document.body;
+        const themeBtn = document.getElementById('theme-toggle');
+        const themeText = document.getElementById('theme-text');
+        const musicBtn = document.getElementById('music-toggle');
+        const musicText = document.getElementById('music-text');
+        const audio = document.getElementById('bg-audio');
+        const headerContainer = document.getElementById('header-container');
+        
+        // Menu Elements
+        const menuContainer = document.getElementById('menu-container');
+        const menuTriggerIcon = document.getElementById('menu-trigger-icon');
+        const menuClose = document.getElementById('menu-close');
+
+        // --- State ---
+        let isDark = true; 
+        let isMusicPlaying = true;
+        let isMenuLocked = false;
+        let isSnowing = true;
+
+        // --- Theme Logic ---
+        function updateThemeUI() {
+            // Updated Logic:
+            // If Dark Mode -> Show Sun (Action: Go Light)
+            // If Light Mode -> Show Moon (Action: Go Dark)
+            
+            const sunIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon w-5 h-5"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>';
+            const moonIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon w-5 h-5"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+
+            const signatureImg = document.querySelector('img[alt="Hongpeng\'s Signature"]');
+
+            if (isDark) {
+                body.classList.add('dark');
+                // Current is Dark, show Sun to switch
+                themeBtn.querySelector('.btn-icon').outerHTML = sunIcon;
+                themeText.textContent = "Switch to Light Mode";
+                if(signatureImg) signatureImg.style.setProperty('--invert-filter', '1');
+            } else {
+                body.classList.remove('dark');
+                // Current is Light, show Moon to switch
+                themeBtn.querySelector('.btn-icon').outerHTML = moonIcon;
+                themeText.textContent = "Switch to Dark Mode";
+                if(signatureImg) signatureImg.style.setProperty('--invert-filter', '0');
+            }
+        }
+
+        themeBtn.addEventListener('click', () => {
+            isDark = !isDark;
+            updateThemeUI();
+        });
+
+        // --- Audio Logic ---
+        function updateMusicUI() {
+            const volHigh = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon w-5 h-5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>';
+            const volMute = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon w-5 h-5"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" x2="17" y1="9" y2="15"/><line x1="17" x2="23" y1="9" y2="15"/></svg>';
+
+            if (isMusicPlaying) {
+                audio.play().catch(e => console.log("Autoplay prevented until interaction"));
+                musicBtn.querySelector('.btn-icon').outerHTML = volHigh;
+                musicText.textContent = "Turn Music Off";
+            } else {
+                audio.pause();
+                musicBtn.querySelector('.btn-icon').outerHTML = volMute;
+                musicText.textContent = "Turn Music On";
+            }
+        }
+
+        musicBtn.addEventListener('click', () => {
+            isMusicPlaying = !isMusicPlaying;
+            updateMusicUI();
+        });
+
+        document.body.addEventListener('click', function() {
+            if(isMusicPlaying && audio.paused) {
+                audio.play();
+            }
+        }, { once: true });
+
+
+        // --- Menu Logic (Displacement Animation) ---
+        function openMenu() {
+            menuContainer.classList.add('menu-open');
+            menuTriggerIcon.style.opacity = '0';
+            
+            if (isMenuLocked) {
+                menuClose.style.display = 'block';
+            }
+        }
+
+        function closeMenu() {
+            if (isMenuLocked) return;
+            menuContainer.classList.remove('menu-open');
+            menuTriggerIcon.style.opacity = '1';
+            menuClose.style.display = 'none';
+        }
+
+        menuContainer.addEventListener('mouseenter', openMenu);
+        menuContainer.addEventListener('mouseleave', () => {
+            if (!isMenuLocked) closeMenu();
+        });
+
+        // Click on the container triggers lock
+        menuContainer.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // Don't toggle if clicking links
+            if (e.target.tagName === 'A') return;
+            
+            isMenuLocked = true;
+            openMenu();
+        });
+
+        menuClose.addEventListener('click', (e) => {
+            e.stopPropagation();
+            isMenuLocked = false;
+            closeMenu();
+        });
+
+        document.addEventListener('click', (e) => {
+            if (isMenuLocked && !menuContainer.contains(e.target)) {
+                isMenuLocked = false;
+                closeMenu();
+            }
+        });
+
+        // --- Scroll Effect ---
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                headerContainer.classList.add('glass-panel');
+            } else {
+                headerContainer.classList.remove('glass-panel');
+            }
+        });
+
+        // --- Snow Effect Engine ---
+        const canvas = document.getElementById('snow-canvas');
+        const ctx = canvas.getContext('2d');
+        const snowToggleBtn = document.getElementById('snow-toggle');
+        const snowSlash = document.getElementById('snow-slash');
+
+        let width, height;
+        let particles = [];
+        let animationFrame;
+
+        // Resize
+        function resizeCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Snow Particle Class
+        class Snowflake {
+            constructor() {
+                this.reset(true);
+            }
+
+            reset(initial = false) {
+                this.x = Math.random() * width;
+                // If initial, spawn randomly on screen. If not, spawn at top.
+                this.y = initial ? Math.random() * height : -5;
+                this.radius = Math.random() * 2 + 0.5; // Small flakes: 0.5px to 2.5px
+                this.speed = Math.random() * 1 + 0.5; // Slow fall
+                this.drift = Math.random() * Math.PI * 2;
+                this.driftSpeed = Math.random() * 0.05;
+                this.opacity = Math.random() * 0.5 + 0.3;
+            }
+
+            update() {
+                this.y += this.speed;
+                this.drift += this.driftSpeed;
+                this.x += Math.sin(this.drift) * 0.5; // Gentle sway
+
+                // Reset if out of bounds
+                if (this.y > height) {
+                    this.reset(false);
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.fill();
+                ctx.closePath();
+            }
+        }
+
+        // Initialize Particles
+        function initSnow() {
+            particles = [];
+            const particleCount = Math.floor(width * 0.15); // Adjust density based on width
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Snowflake());
+            }
+        }
+
+        function animateSnow() {
+            if (!isSnowing) return;
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            animationFrame = requestAnimationFrame(animateSnow);
+        }
+
+        // Toggle Logic
+        snowToggleBtn.addEventListener('click', () => {
+            isSnowing = !isSnowing;
+            if (isSnowing) {
+                snowSlash.style.display = 'block'; // Show "Stop" slash
+                animateSnow();
+            } else {
+                snowSlash.style.display = 'none'; // Show clean snowflake
+                ctx.clearRect(0, 0, width, height);
+                cancelAnimationFrame(animationFrame);
+            }
+        });
+
+        // Start Snow
+        initSnow();
+        animateSnow();
+
+
+        // --- Init ---
+        updateThemeUI();
+        
+    </script>
+</body>
+</html>
